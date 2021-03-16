@@ -9,7 +9,7 @@ namespace Shufl.API.Tests
         public void Test1()
         {
             var test = true;
-            Assert.True(true);
+            Assert.True(test);
         }
     }
 }
