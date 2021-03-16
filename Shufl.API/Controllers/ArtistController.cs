@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Shufl.API.DownloadModels.Artist;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models;
 using System;
@@ -25,7 +26,14 @@ namespace Shufl.API.Controllers
             {
                 var randomArtist = await ArtistModel.FetchRandomArtistAsync(_spotifyAPICredentials);
                 var randomArtistAlbums = await AlbumModel.FetchArtistAlbumsAsync(randomArtist.Id, _spotifyAPICredentials);
-                return Ok(randomArtist);
+
+                var artist = new ArtistDownloadModel
+                {
+                    Artist = randomArtist,
+                    Albums = randomArtistAlbums
+                };
+
+                return Ok(artist);
             }
             catch (Exception err)
             {

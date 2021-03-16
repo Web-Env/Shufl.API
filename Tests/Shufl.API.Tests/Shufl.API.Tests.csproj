@@ -23,4 +23,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shufl.API\Shufl.API.csproj" />
+  </ItemGroup>
+
 </Project>
