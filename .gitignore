@@ -332,3 +332,5 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
+Properties/serviceDependencies.shufl-api - Web Deploy.json
+Properties/ServiceDependencies/shufl-api - Web Deploy/profile.arm.json
