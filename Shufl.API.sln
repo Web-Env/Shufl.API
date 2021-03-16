@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shufl.API.Tests", "Tests\Sh
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D7AA161F-28E6-4E9B-B026-BA7C3F00B822}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shufl.API.Models.Tests", "Tests\Shufl.API.Models.Tests\Shufl.API.Models.Tests.csproj", "{36ACEE10-B8BC-40DE-A539-5AA3E4D47899}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,12 +43,17 @@ Global
 		{7BEB9672-E53C-4F1D-BE67-2FBBD9F3626D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BEB9672-E53C-4F1D-BE67-2FBBD9F3626D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BEB9672-E53C-4F1D-BE67-2FBBD9F3626D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36ACEE10-B8BC-40DE-A539-5AA3E4D47899}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36ACEE10-B8BC-40DE-A539-5AA3E4D47899}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36ACEE10-B8BC-40DE-A539-5AA3E4D47899}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36ACEE10-B8BC-40DE-A539-5AA3E4D47899}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7BEB9672-E53C-4F1D-BE67-2FBBD9F3626D} = {D7AA161F-28E6-4E9B-B026-BA7C3F00B822}
+		{36ACEE10-B8BC-40DE-A539-5AA3E4D47899} = {D7AA161F-28E6-4E9B-B026-BA7C3F00B822}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1A862AF5-CE09-43E4-B660-2A28AFC6D2C1}
