@@ -1,7 +1,7 @@
 ﻿using SpotifyAPI.Web;
 using System.Collections.Generic;
 
-namespace Shufl.API.DownloadModel
+namespace Shufl.API.DownloadModels.Album
 {
     public class AlbumDownloadModel
     {

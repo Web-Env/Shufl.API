@@ -11,5 +11,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Shufl.API.DownloadModels\Shufl.API.DownloadModels.csproj" />
+    <ProjectReference Include="..\Shufl.API.Infrastructure\Shufl.API.Infrastructure.csproj" />
+    <ProjectReference Include="..\Shufl.API.Models\Shufl.API.Models.csproj" />
+  </ItemGroup>
+
 
 </Project>

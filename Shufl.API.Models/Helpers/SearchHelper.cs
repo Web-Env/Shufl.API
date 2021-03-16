@@ -1,10 +1,10 @@
-﻿using Shufl.API.Consts;
-using Shufl.API.Settings;
+﻿using Shufl.API.Infrastructure.Consts;
+using Shufl.API.Infrastructure.Settings;
 using SpotifyAPI.Web;
 using System;
 using System.Threading.Tasks;
 
-namespace Shufl.API.Helpers
+namespace Shufl.API.Models.Helpers
 {
     public static class SearchHelper
     {
@@ -18,7 +18,7 @@ namespace Shufl.API.Helpers
 
         private static string BuildSearchQuery(string genre)
         {
-            var searchQuery = $"genre:{genre} NOT genre:{SearchConsts.SearchExcludedGenres}";
+            var searchQuery = $"genre:{genre} {SearchConsts.SearchExcludedGenres}";
             return searchQuery;
         }
 

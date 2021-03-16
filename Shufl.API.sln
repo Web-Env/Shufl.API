@@ -3,7 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shufl.API", "Shufl.API/Shufl.API.csproj", "{986E150B-ED6F-48BB-8EFB-23386828AC8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shufl.API", "Shufl.API\Shufl.API.csproj", "{986E150B-ED6F-48BB-8EFB-23386828AC8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shufl.API.DownloadModels", "Shufl.API.DownloadModels\Shufl.API.DownloadModels.csproj", "{D88E1061-C346-4A32-8266-8A8E312E4244}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shufl.API.Infrastructure", "Shufl.API.Infrastructure\Shufl.API.Infrastructure.csproj", "{E252EC6D-8759-41CB-8F09-85EF8554F10B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shufl.API.Models", "Shufl.API.Models\Shufl.API.Models.csproj", "{AF793EFF-58F1-40E5-B3B8-089B5775F9E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shufl.API.Tests", "Tests\Shufl.API.Tests\Shufl.API.Tests.csproj", "{7BEB9672-E53C-4F1D-BE67-2FBBD9F3626D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D7AA161F-28E6-4E9B-B026-BA7C3F00B822}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +25,28 @@ Global
 		{986E150B-ED6F-48BB-8EFB-23386828AC8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{986E150B-ED6F-48BB-8EFB-23386828AC8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{986E150B-ED6F-48BB-8EFB-23386828AC8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D88E1061-C346-4A32-8266-8A8E312E4244}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D88E1061-C346-4A32-8266-8A8E312E4244}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D88E1061-C346-4A32-8266-8A8E312E4244}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D88E1061-C346-4A32-8266-8A8E312E4244}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E252EC6D-8759-41CB-8F09-85EF8554F10B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E252EC6D-8759-41CB-8F09-85EF8554F10B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E252EC6D-8759-41CB-8F09-85EF8554F10B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E252EC6D-8759-41CB-8F09-85EF8554F10B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF793EFF-58F1-40E5-B3B8-089B5775F9E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF793EFF-58F1-40E5-B3B8-089B5775F9E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF793EFF-58F1-40E5-B3B8-089B5775F9E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF793EFF-58F1-40E5-B3B8-089B5775F9E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BEB9672-E53C-4F1D-BE67-2FBBD9F3626D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BEB9672-E53C-4F1D-BE67-2FBBD9F3626D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BEB9672-E53C-4F1D-BE67-2FBBD9F3626D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BEB9672-E53C-4F1D-BE67-2FBBD9F3626D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7BEB9672-E53C-4F1D-BE67-2FBBD9F3626D} = {D7AA161F-28E6-4E9B-B026-BA7C3F00B822}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1A862AF5-CE09-43E4-B660-2A28AFC6D2C1}

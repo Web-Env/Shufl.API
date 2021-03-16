@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shufl.API.DownloadModel;
+using Shufl.API.DownloadModels;
 using SpotifyAPI.Web;
 using System.Threading.Tasks;
 

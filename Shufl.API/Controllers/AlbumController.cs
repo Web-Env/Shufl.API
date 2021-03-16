@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Shufl.API.Helpers;
-using Shufl.API.Settings;
+using Shufl.API.Infrastructure.Settings;
+using Shufl.API.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -23,7 +23,7 @@ namespace Shufl.API.Properties
         {
             try
             {
-                var randomAlbum = await AlbumSearchHelper.FetchRandomAlbumAsync(_spotifyAPICredentials, genre);
+                var randomAlbum = await AlbumModel.FetchRandomAlbumAsync(_spotifyAPICredentials, genre);
                 return Ok(randomAlbum);
             }
             catch (Exception err)
@@ -44,7 +44,7 @@ namespace Shufl.API.Properties
         {
             try
             {
-                var album = await AlbumSearchHelper.FetchAlbumAsync(albumId, _spotifyAPICredentials);
+                var album = await AlbumModel.FetchAlbumAsync(albumId, _spotifyAPICredentials);
                 return Ok(album);
             }
             catch (Exception err)
@@ -58,13 +58,11 @@ namespace Shufl.API.Properties
         {
             try
             {
-                var albums = (await SearchHelper.PerformSearch(
-                    SpotifyAPI.Web.SearchRequest.Types.Album,
+                var albums = (await AlbumModel.PerformAlbumSearch(
                     name,
-                    10,
-                    0,
                     _spotifyAPICredentials
                 )).Albums.Items;
+
                 return Ok(albums);
             }
             catch (Exception err)

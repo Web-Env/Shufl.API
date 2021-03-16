@@ -1,4 +1,4 @@
-﻿namespace Shufl.API.Settings
+﻿namespace Shufl.API.Infrastructure.Settings
 {
     public class SmtpSettings
     {

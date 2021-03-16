@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Shufl.API.Extensions
+namespace Shufl.API.Infrastructure.Extensions
 {
     public static class ListExtensions
     {

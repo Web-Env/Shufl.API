@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Shufl.API.Helpers;
-using Shufl.API.Settings;
+using Shufl.API.Infrastructure.Settings;
+using Shufl.API.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -23,7 +23,7 @@ namespace Shufl.API.Controllers
         {
             try
             {
-                var randomTrack = await TrackSearchHelper.FetchRandomTrackAsync(_spotifyAPICredentials);
+                var randomTrack = await TrackModel.FetchRandomTrackAsync(_spotifyAPICredentials);
                 return Ok(randomTrack);
             }
             catch (Exception err)
@@ -37,7 +37,7 @@ namespace Shufl.API.Controllers
         {
             try
             {
-                var track = await TrackSearchHelper.FetchTrackAsync(trackId, _spotifyAPICredentials);
+                var track = await TrackModel.FetchTrackAsync(trackId, _spotifyAPICredentials);
                 return Ok(track);
             }
             catch (Exception err)

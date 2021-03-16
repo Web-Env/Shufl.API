@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shufl.API.DownloadModels\Shufl.API.DownloadModels.csproj" />
+    <ProjectReference Include="..\Shufl.API.Infrastructure\Shufl.API.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

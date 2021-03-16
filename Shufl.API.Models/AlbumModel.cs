@@ -1,20 +1,20 @@
-﻿using Shufl.API.Consts;
-using Shufl.API.DownloadModel;
-using Shufl.API.Extensions;
-using Shufl.API.Settings;
+﻿using Shufl.API.DownloadModels.Album;
+using Shufl.API.Infrastructure.Extensions;
+using Shufl.API.Infrastructure.Settings;
+using Shufl.API.Models.Helpers;
 using SpotifyAPI.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Shufl.API.Helpers
+namespace Shufl.API.Models
 {
-    public static class AlbumSearchHelper
+    public static class AlbumModel
     {
         public static async Task<AlbumDownloadModel> FetchRandomAlbumAsync(SpotifyAPICredentials spotifyAPICredentials, string genre = "")
         {
-            var randomArtist = await ArtistSearchHelper.FetchRandomArtistAsync(spotifyAPICredentials, genre);
+            var randomArtist = await ArtistModel.FetchRandomArtistAsync(spotifyAPICredentials, genre);
             var randomArtistAlbums = await FetchArtistAlbumsAsync(randomArtist.Id, spotifyAPICredentials);
             randomArtistAlbums.Shuffle();
             var randomAlbum = GetRandomAlbum(randomArtistAlbums);
@@ -25,7 +25,11 @@ namespace Shufl.API.Helpers
         {
             var spotifyClient = SearchHelper.CreateSpotifyClient(spotifyAPICredentials);
 
-            var albums = (await spotifyClient.Artists.GetAlbums(artistId)).Items;
+            var albumsRequest = new ArtistsAlbumsRequest
+            {
+                Market = "IE"
+            };
+            var albums = (await spotifyClient.Artists.GetAlbums(artistId, albumsRequest)).Items;
 
             return albums;
         }
@@ -35,7 +39,7 @@ namespace Shufl.API.Helpers
             var spotifyClient = SearchHelper.CreateSpotifyClient(spotifyAPICredentials);
 
             var album = await spotifyClient.Albums.Get(albumId);
-            var artist = await ArtistSearchHelper.FetchArtistAsync(album.Artists.FirstOrDefault().Id, spotifyAPICredentials);
+            var artist = await ArtistModel.FetchArtistAsync(album.Artists.FirstOrDefault().Id, spotifyAPICredentials);
 
             var albumData = new AlbumDownloadModel
             {
@@ -47,8 +51,8 @@ namespace Shufl.API.Helpers
         }
 
         public static async Task<SearchResponse> PerformAlbumSearch(
-            string name, 
-            SpotifyAPICredentials spotifyAPICredentials, 
+            string name,
+            SpotifyAPICredentials spotifyAPICredentials,
             bool retryDueToException = false)
         {
             SearchResponse search;
@@ -84,7 +88,7 @@ namespace Shufl.API.Helpers
         {
             var randomAlbum = randomAlbums[index];
 
-            if ((randomAlbum.AlbumType == "single" || randomAlbum.AlbumType == "ep") && 
+            if ((randomAlbum.AlbumType == "single" || randomAlbum.AlbumType == "ep") &&
                 index <= randomAlbums.Count - 1)
             {
                 index++;

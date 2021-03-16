@@ -1,13 +1,15 @@
-﻿using Shufl.API.Consts;
-using Shufl.API.Settings;
+﻿using Shufl.API.Infrastructure.Consts;
+using Shufl.API.Infrastructure.Settings;
+using Shufl.API.Models.Helpers;
 using SpotifyAPI.Web;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace Shufl.API.Helpers
+namespace Shufl.API.Models
 {
-    public class ArtistSearchHelper
+    public static class ArtistModel
     {
         public static async Task<FullArtist> FetchRandomArtistAsync(SpotifyAPICredentials spotifyAPICredentials, string genre = "")
         {
