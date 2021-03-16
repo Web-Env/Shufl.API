@@ -69,7 +69,7 @@ namespace Shufl.API.Models
             {
                 if (!retryDueToException)
                 {
-                    return await PerformAlbumSearch(name, spotifyAPICredentials, true);
+                    return await PerformAlbumSearch(name, spotifyAPICredentials, true).ConfigureAwait(false);
                 }
                 else
                 {

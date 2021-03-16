@@ -30,7 +30,7 @@ namespace Shufl.API.Properties
             {
                 if (!failed)
                 {
-                    return await GetRandomAlbumAsync(genre, true);
+                    return await GetRandomAlbumAsync(genre, true).ConfigureAwait(false);
                 }
                 else
                 {
