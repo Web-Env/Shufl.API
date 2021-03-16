@@ -8,7 +8,8 @@ namespace Shufl.API.Tests
         [Fact]
         public void Test1()
         {
-            Assert.True(true);
+            var test = true;
+            Assert.True(test);
         }
     }
 }
