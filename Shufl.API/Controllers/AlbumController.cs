@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Shufl.API.Controllers;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models;
 using System;
@@ -9,11 +11,11 @@ namespace Shufl.API.Properties
 {
     [ApiController]
     [Route("[controller]")]
-    public class AlbumController : ControllerBase
+    public class AlbumController : CustomControllerBase
     {
         private readonly SpotifyAPICredentials _spotifyAPICredentials;
 
-        public AlbumController(IOptions<SpotifyAPICredentials> spotifyAPICredentials)
+        public AlbumController(ILogger<AlbumController> logger, IOptions<SpotifyAPICredentials> spotifyAPICredentials) : base(logger)
         {
             _spotifyAPICredentials = spotifyAPICredentials.Value;
         }
@@ -23,6 +25,7 @@ namespace Shufl.API.Properties
         {
             try
             {
+                Logger.LogInformation("Test", "Test");
                 var randomAlbum = await AlbumModel.FetchRandomAlbumAsync(_spotifyAPICredentials, genre).ConfigureAwait(false);
                 return Ok(randomAlbum);
             }
@@ -34,6 +37,7 @@ namespace Shufl.API.Properties
                 }
                 else
                 {
+                    Logger.LogError(err, err.Message);
                     return Problem("There was an error fetching a random album from Spotify", statusCode: 500, type: err.GetType().ToString());
                 }
             }
