@@ -1,0 +1,49 @@
+name: Master - Build, Test, Pack & Publish
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Setup nuget sources
+      run: dotnet nuget add source https://nuget.pkg.github.com/Web-Env/index.json -n GPR -u AdamBOD -p ${{ secrets.GPR_TOKEN }} --store-password-in-clear-text
+    - name: Clean
+      run: dotnet clean ./Shufl.API.sln -- configuration Release && dotnet nuget locals all --clear
+    - name: Restore dependencies
+      run: dotnet restore --disable-parallel
+    - name: Configure App Settings
+      uses: microsoft/variable-substitution@v1 
+      with:
+        files: './Shufl.API/appsettings.json'
+      env:
+        SmtpSettings.emailSmtpPassword: ${{ secrets.SMTP_PASSWORD }}
+        ConnectionStrings.ShuflDb: ${{ secrets.PRODUCTION_CONNECTION_STRING }}
+    - name: Build (Debug)
+      run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - name: Publish Coverage
+      uses: codacy/codacy-coverage-reporter-action@0.2.0
+      with:
+        project-token: ${{ secrets.CODACY_TOKEN }}
+        coverage-reports: Tests/*.Tests/coverage.opencover.xml
+    - name: Build (Release)
+      run: dotnet build -c Release --no-restore
+    - name: Publish (Release)
+      run: dotnet publish -c Release -o ./dist --no-build
+    - name: Deploy (Release)
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: shufl-api
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ./dist
