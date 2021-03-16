@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shufl.API.DownloadModels;
-using SpotifyAPI.Web;
-using System.Threading.Tasks;
 
 namespace Shufl.API.Controllers
 {

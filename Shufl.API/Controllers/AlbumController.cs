@@ -23,7 +23,7 @@ namespace Shufl.API.Properties
         {
             try
             {
-                var randomAlbum = await AlbumModel.FetchRandomAlbumAsync(_spotifyAPICredentials, genre);
+                var randomAlbum = await AlbumModel.FetchRandomAlbumAsync(_spotifyAPICredentials, genre).ConfigureAwait(false);
                 return Ok(randomAlbum);
             }
             catch (Exception err)
@@ -44,7 +44,7 @@ namespace Shufl.API.Properties
         {
             try
             {
-                var album = await AlbumModel.FetchAlbumAsync(albumId, _spotifyAPICredentials);
+                var album = await AlbumModel.FetchAlbumAsync(albumId, _spotifyAPICredentials).ConfigureAwait(false);
                 return Ok(album);
             }
             catch (Exception err)
@@ -60,8 +60,7 @@ namespace Shufl.API.Properties
             {
                 var albums = (await AlbumModel.PerformAlbumSearch(
                     name,
-                    _spotifyAPICredentials
-                )).Albums.Items;
+                    _spotifyAPICredentials).ConfigureAwait(false)).Albums.Items;
 
                 return Ok(albums);
             }

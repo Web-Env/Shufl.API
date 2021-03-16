@@ -15,10 +15,10 @@ namespace Shufl.API.Models
         public static async Task<AlbumDownloadModel> FetchRandomAlbumAsync(SpotifyAPICredentials spotifyAPICredentials, string genre = "")
         {
             var randomArtist = await ArtistModel.FetchRandomArtistAsync(spotifyAPICredentials, genre);
-            var randomArtistAlbums = await FetchArtistAlbumsAsync(randomArtist.Id, spotifyAPICredentials);
+            var randomArtistAlbums = await FetchArtistAlbumsAsync(randomArtist.Id, spotifyAPICredentials).ConfigureAwait(false);
             randomArtistAlbums.Shuffle();
             var randomAlbum = GetRandomAlbum(randomArtistAlbums);
-            return await FetchAlbumAsync(randomAlbum.Id, spotifyAPICredentials);
+            return await FetchAlbumAsync(randomAlbum.Id, spotifyAPICredentials).ConfigureAwait(false);
         }
 
         public static async Task<List<SimpleAlbum>> FetchArtistAlbumsAsync(string artistId, SpotifyAPICredentials spotifyAPICredentials)

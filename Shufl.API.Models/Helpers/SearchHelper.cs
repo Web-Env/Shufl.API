@@ -23,12 +23,12 @@ namespace Shufl.API.Models.Helpers
         }
 
         public static async Task<SearchResponse> PerformSearch(
-            SearchRequest.Types type, 
-            string searchQuery, 
-            int limit, 
-            int offset, 
+            SearchRequest.Types type,
+            string searchQuery,
+            int limit,
+            int offset,
             SpotifyAPICredentials spotifyAPICredentials,
-            bool retryDueToException = false, 
+            bool retryDueToException = false,
             int retry = 0)
         {
             SearchResponse search;
@@ -45,7 +45,13 @@ namespace Shufl.API.Models.Helpers
             {
                 if (!retryDueToException)
                 {
-                    return await PerformSearch(type, searchQuery, limit, offset, spotifyAPICredentials, true);
+                    return await PerformSearch(
+                        type,
+                        searchQuery,
+                        limit,
+                        offset,
+                        spotifyAPICredentials,
+                        true).ConfigureAwait(false);
                 }
                 else
                 {
@@ -69,7 +75,13 @@ namespace Shufl.API.Models.Helpers
                 {
                     retry++;
                     offset = (int)(offset * (0.1f * retry));
-                    return await PerformSearch(type, searchQuery, limit, offset, spotifyAPICredentials, retry: retry);
+                    return await PerformSearch(
+                        type,
+                        searchQuery,
+                        limit,
+                        offset,
+                        spotifyAPICredentials,
+                        retry: retry).ConfigureAwait(false);
                 }
             }
 
@@ -77,15 +89,15 @@ namespace Shufl.API.Models.Helpers
         }
 
         public static async Task<SearchResponse> PerformRandomSearch(
-            SearchRequest.Types type, 
-            SpotifyAPICredentials spotifyAPICredentials, 
+            SearchRequest.Types type,
+            SpotifyAPICredentials spotifyAPICredentials,
             string genre = "")
         {
             var buildSearchQueryResult = BuildSearchQuery(genre);
             var searchQuery = buildSearchQueryResult;
             var offset = RandInt(0, 999);
 
-            return await PerformSearch(type, searchQuery, 50, offset, spotifyAPICredentials);
+            return await PerformSearch(type, searchQuery, 50, offset, spotifyAPICredentials).ConfigureAwait(false);
         }
 
         public static int RandInt(int min, int max)

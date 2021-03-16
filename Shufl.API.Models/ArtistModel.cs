@@ -4,7 +4,6 @@ using Shufl.API.Models.Helpers;
 using SpotifyAPI.Web;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Shufl.API.Models
@@ -38,7 +37,8 @@ namespace Shufl.API.Models
                 }
                 else
                 {
-                    return SelectRandomArtist(artists, retry++);
+                    retry++;
+                    return SelectRandomArtist(artists, retry);
                 }
             }
 
