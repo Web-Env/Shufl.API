@@ -28,6 +28,8 @@ jobs:
       env:
         SmtpSettings.emailSmtpPassword: ${{ secrets.SMTP_PASSWORD }}
         ConnectionStrings.ShuflDb: ${{ secrets.PRODUCTION_CONNECTION_STRING }}
+        SpotifyAPICredentials.ClientId: ${{ secrets.SPOTIFY_API_CLIENT_ID }}
+        SpotifyAPICredentials.ClientSecret: ${{ secrets.SPOTIFY_API_CLIENT_SECRET }}
     - name: Build (Debug)
       run: dotnet build --no-restore
     - name: Test
