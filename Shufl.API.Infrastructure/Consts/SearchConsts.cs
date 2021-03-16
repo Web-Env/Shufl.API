@@ -4,13 +4,13 @@ namespace Shufl.API.Infrastructure.Consts
 {
     public static class SearchConsts
     {
-        public static List<string> SearchTerms { get; } = new List<string>()
+        public static List<string> SearchTerms { get; } = new List<string>
         {
             "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
             "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
         };
 
-        public static List<string> SearchGenres { get; } = new List<string>()
+        public static List<string> SearchGenres { get; } = new List<string>
         {
             "acoustic", "alt-rock", "alternative", "ambient", "bluegrass", "blues", "british",
             "chill", "classical", "country", "dance", "dancehall", "disco", "drum-and-bass",

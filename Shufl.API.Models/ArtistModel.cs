@@ -38,7 +38,8 @@ namespace Shufl.API.Models
                 }
                 else
                 {
-                    return SelectRandomArtist(artists, retry++);
+                    retry++;
+                    return SelectRandomArtist(artists, retry);
                 }
             }
 

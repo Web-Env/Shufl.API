@@ -12,7 +12,7 @@ namespace Shufl.API.Models
     {
         public static async Task<AlbumDownloadModel> FetchRandomTrackAsync(SpotifyAPICredentials spotifyAPICredentials, string genre = "")
         {
-            var album = await AlbumModel.FetchRandomAlbumAsync(spotifyAPICredentials, genre);
+            var album = await AlbumModel.FetchRandomAlbumAsync(spotifyAPICredentials, genre).ConfigureAwait(false);
             album.Album.Tracks.Items = GetRandomTrack(album.Album.Tracks.Items);
 
             return album;
@@ -23,7 +23,7 @@ namespace Shufl.API.Models
             var spotifyClient = SearchHelper.CreateSpotifyClient(spotifyAPICredentials);
 
             var track = await spotifyClient.Tracks.Get(trackId);
-            var album = await AlbumModel.FetchAlbumAsync(track.Album.Id, spotifyAPICredentials);
+            var album = await AlbumModel.FetchAlbumAsync(track.Album.Id, spotifyAPICredentials).ConfigureAwait(false);
             album.Album.Tracks.Items = GetTrack(album.Album.Tracks.Items, trackId);
 
             return album;
@@ -32,7 +32,7 @@ namespace Shufl.API.Models
         private static List<SimpleTrack> GetRandomTrack(List<SimpleTrack> randomTracks)
         {
             var randIndex = SearchHelper.RandInt(0, randomTracks.Count - 1);
-            var randomTrackList = new List<SimpleTrack>()
+            var randomTrackList = new List<SimpleTrack>
             {
                 randomTracks[randIndex]
             };
@@ -43,7 +43,7 @@ namespace Shufl.API.Models
         private static List<SimpleTrack> GetTrack(List<SimpleTrack> tracks, string trackId)
         {
             var track = tracks.FirstOrDefault(t => t.Id == trackId);
-            var trackList = new List<SimpleTrack>()
+            var trackList = new List<SimpleTrack>
             {
                 track
             };
