@@ -5,7 +5,7 @@ namespace Shufl.API.Controllers
 {
     public class CustomControllerBase : ControllerBase
     {
-        public readonly ILogger Logger;
+        protected readonly ILogger Logger;
 
         public CustomControllerBase(ILogger<CustomControllerBase> logger)
         {

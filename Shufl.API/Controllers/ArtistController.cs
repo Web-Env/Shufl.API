@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shufl.API.DownloadModels.Artist;
 using Shufl.API.Infrastructure.Settings;
@@ -10,11 +11,11 @@ namespace Shufl.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ArtistController : ControllerBase
+    public class ArtistController : CustomControllerBase
     {
         private readonly SpotifyAPICredentials _spotifyAPICredentials;
 
-        public ArtistController(IOptions<SpotifyAPICredentials> spotifyAPICredentials)
+        public ArtistController(ILogger<ArtistController> logger, IOptions<SpotifyAPICredentials> spotifyAPICredentials) : base(logger)
         {
             _spotifyAPICredentials = spotifyAPICredentials.Value;
         }
@@ -37,6 +38,7 @@ namespace Shufl.API.Controllers
             }
             catch (Exception err)
             {
+                Logger.LogError(err, err.Message);
                 return Problem("There was an error fetching a random artist from Spotify", statusCode: 500, type: err.GetType().ToString());
             }
         }
@@ -51,6 +53,7 @@ namespace Shufl.API.Controllers
             }
             catch (Exception err)
             {
+                Logger.LogError(err, err.Message);
                 return Problem("There was an error fetching the requested artist from Spotify", statusCode: 500, type: err.GetType().ToString());
             }
         }

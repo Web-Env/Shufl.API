@@ -25,7 +25,6 @@ namespace Shufl.API.Properties
         {
             try
             {
-                Logger.LogInformation("Test", "Test");
                 var randomAlbum = await AlbumModel.FetchRandomAlbumAsync(_spotifyAPICredentials, genre).ConfigureAwait(false);
                 return Ok(randomAlbum);
             }
@@ -53,6 +52,7 @@ namespace Shufl.API.Properties
             }
             catch (Exception err)
             {
+                Logger.LogError(err, err.Message);
                 return Problem("There was an error fetching the requested album from Spotify", statusCode: 500, type: err.GetType().ToString());
             }
         }
@@ -70,6 +70,7 @@ namespace Shufl.API.Properties
             }
             catch (Exception err)
             {
+                Logger.LogError(err, err.Message);
                 return Problem("There was an error searching for the album from Spotify", statusCode: 500, type: err.GetType().ToString());
             }
         }

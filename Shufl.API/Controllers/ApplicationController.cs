@@ -4,7 +4,7 @@ namespace Shufl.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ApplicationController : Controller
+    public class ApplicationController : ControllerBase
     {
         [HttpGet("Version")]
         public ActionResult<string> GetVersion()

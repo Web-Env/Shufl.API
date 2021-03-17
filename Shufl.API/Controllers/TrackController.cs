@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models;
@@ -9,11 +10,11 @@ namespace Shufl.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class TrackController : ControllerBase
+    public class TrackController : CustomControllerBase
     {
         private readonly SpotifyAPICredentials _spotifyAPICredentials;
 
-        public TrackController(IOptions<SpotifyAPICredentials> spotifyAPICredentials)
+        public TrackController(ILogger<TrackController> logger, IOptions<SpotifyAPICredentials> spotifyAPICredentials) : base(logger)
         {
             _spotifyAPICredentials = spotifyAPICredentials.Value;
         }
@@ -28,6 +29,7 @@ namespace Shufl.API.Controllers
             }
             catch (Exception err)
             {
+                Logger.LogError(err, err.Message);
                 return Problem("There was an error fetching a random track from Spotify", statusCode: 500, type: err.GetType().ToString());
             }
         }
@@ -42,6 +44,7 @@ namespace Shufl.API.Controllers
             }
             catch (Exception err)
             {
+                Logger.LogError(err, err.Message);
                 return Problem("There was an error fetching the requested track from Spotify", statusCode: 500, type: err.GetType().ToString());
             }
         }
