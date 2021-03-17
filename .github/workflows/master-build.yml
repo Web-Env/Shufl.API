@@ -42,7 +42,7 @@ jobs:
     - name: Build (Release)
       run: dotnet build -c Release --no-restore
     - name: Publish (Release)
-      run: dotnet publish -c Release -o ./dist --no-build
+      run: dotnet publish ./Shufl.API/Shufl.API.csproj -c Release -o ./dist --no-build
     - name: Deploy (Release)
       uses: azure/webapps-deploy@v2
       with:
