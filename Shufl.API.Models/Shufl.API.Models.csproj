@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Shufl.API.DownloadModels\Shufl.API.DownloadModels.csproj" />
     <ProjectReference Include="..\Shufl.API.Infrastructure\Shufl.API.Infrastructure.csproj" />
   </ItemGroup>
