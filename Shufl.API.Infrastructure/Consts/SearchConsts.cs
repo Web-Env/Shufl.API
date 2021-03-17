@@ -23,7 +23,7 @@ namespace Shufl.API.Infrastructure.Consts
             "techno", "trance"
         };
 
-        public static string SearchExcludedGenres { get; } = "NOT genre:kids NOT genre:children NOT genre:christian NOT genre:gospel NOT genre:worship";
+        public static string SearchExcludedGenres { get; } = @"NOT genre:kids NOT genre:children NOT genre:christian NOT genre:gospel NOT genre:worship NOT genre:disney";
 
         public static string VariousArtistsId { get; } = "0LyfQWJT6nXafLPZqxe9Of";
     }

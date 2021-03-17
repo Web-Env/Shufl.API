@@ -48,7 +48,14 @@ namespace Shufl.API.Controllers
         {
             try
             {
-                var artist = await ArtistModel.FetchArtistAsync(artistId, _spotifyAPICredentials);
+                var requestedArtist = await ArtistModel.FetchArtistAsync(artistId, _spotifyAPICredentials);
+                var artistAlbums = await AlbumModel.FetchArtistAlbumsAsync(requestedArtist.Id, _spotifyAPICredentials);
+
+                var artist = new ArtistDownloadModel
+                {
+                    Artist = requestedArtist,
+                    Albums = artistAlbums
+                };
                 return Ok(artist);
             }
             catch (Exception err)
