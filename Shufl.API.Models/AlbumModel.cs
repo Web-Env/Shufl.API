@@ -1,4 +1,5 @@
 ﻿using Shufl.API.DownloadModels.Album;
+using Shufl.API.Infrastructure.Consts;
 using Shufl.API.Infrastructure.Extensions;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models.Helpers;
@@ -88,7 +89,7 @@ namespace Shufl.API.Models
         {
             var randomAlbum = randomAlbums[index];
 
-            if ((randomAlbum.AlbumType == "single" || randomAlbum.AlbumType == "ep") &&
+            if ((randomAlbum.AlbumType == "single" || randomAlbum.AlbumType == "ep" || randomAlbum.Artists?[0].Id != SearchConsts.VariousArtistsId) &&
                 index <= randomAlbums.Count - 1)
             {
                 index++;
