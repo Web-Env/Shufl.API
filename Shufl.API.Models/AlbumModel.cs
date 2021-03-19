@@ -89,14 +89,23 @@ namespace Shufl.API.Models
         {
             var randomAlbum = randomAlbums[index];
 
-            if ((randomAlbum.AlbumType == "single" || randomAlbum.AlbumType == "ep" || randomAlbum.Artists?[0].Id != SearchConsts.VariousArtistsId) &&
-                index <= randomAlbums.Count - 1)
+            if (!IsValidAlbum(randomAlbum) && index < randomAlbums.Count - 1)
             {
                 index++;
                 return GetRandomAlbum(randomAlbums, index);
             }
 
             return randomAlbum;
+        }
+
+        private static bool IsValidAlbum(SimpleAlbum album)
+        {
+            if (album.AlbumType == "single" || album.Artists.Count == 0 || album.Artists[0].Id == SearchConsts.VariousArtistsId)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
