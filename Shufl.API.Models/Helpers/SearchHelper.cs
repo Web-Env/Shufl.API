@@ -63,9 +63,7 @@ namespace Shufl.API.Models.Helpers
                 }
             }
 
-            if ((type == SearchRequest.Types.Artist && search.Artists.Items.Count == 0) ||
-                (type == SearchRequest.Types.Album && search.Albums.Items.Count == 0) ||
-                (type == SearchRequest.Types.Track && search.Tracks.Items.Count == 0))
+            if (!IsValidSearchResponse(type, search))
             {
                 if (retry == 5 || offset < limit)
                 {
@@ -104,6 +102,18 @@ namespace Shufl.API.Models.Helpers
         {
             var rand = new Random();
             return rand.Next(min, max);
+        }
+
+        private static bool IsValidSearchResponse(SearchRequest.Types type, SearchResponse searchResponse)
+        {
+            if((type == SearchRequest.Types.Artist && searchResponse.Artists.Items.Count == 0) ||
+               (type == SearchRequest.Types.Album && searchResponse.Albums.Items.Count == 0) ||
+               (type == SearchRequest.Types.Track && searchResponse.Tracks.Items.Count == 0))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
