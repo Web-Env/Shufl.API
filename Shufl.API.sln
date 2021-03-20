@@ -5,17 +5,21 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shufl.API", "Shufl.API\Shufl.API.csproj", "{986E150B-ED6F-48BB-8EFB-23386828AC8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shufl.API.DownloadModels", "Shufl.API.DownloadModels\Shufl.API.DownloadModels.csproj", "{D88E1061-C346-4A32-8266-8A8E312E4244}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shufl.API.DownloadModels", "Shufl.API.DownloadModels\Shufl.API.DownloadModels.csproj", "{D88E1061-C346-4A32-8266-8A8E312E4244}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shufl.API.Infrastructure", "Shufl.API.Infrastructure\Shufl.API.Infrastructure.csproj", "{E252EC6D-8759-41CB-8F09-85EF8554F10B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shufl.API.Infrastructure", "Shufl.API.Infrastructure\Shufl.API.Infrastructure.csproj", "{E252EC6D-8759-41CB-8F09-85EF8554F10B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shufl.API.Models", "Shufl.API.Models\Shufl.API.Models.csproj", "{AF793EFF-58F1-40E5-B3B8-089B5775F9E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shufl.API.Models", "Shufl.API.Models\Shufl.API.Models.csproj", "{AF793EFF-58F1-40E5-B3B8-089B5775F9E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shufl.API.Tests", "Tests\Shufl.API.Tests\Shufl.API.Tests.csproj", "{7BEB9672-E53C-4F1D-BE67-2FBBD9F3626D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shufl.API.Tests", "Tests\Shufl.API.Tests\Shufl.API.Tests.csproj", "{7BEB9672-E53C-4F1D-BE67-2FBBD9F3626D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D7AA161F-28E6-4E9B-B026-BA7C3F00B822}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shufl.API.Models.Tests", "Tests\Shufl.API.Models.Tests\Shufl.API.Models.Tests.csproj", "{36ACEE10-B8BC-40DE-A539-5AA3E4D47899}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shufl.API.Models.Tests", "Tests\Shufl.API.Models.Tests\Shufl.API.Models.Tests.csproj", "{36ACEE10-B8BC-40DE-A539-5AA3E4D47899}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shufl.API.UploadModels", "Shufl.API.UploadModels\Shufl.API.UploadModels.csproj", "{6A914C6E-496E-479C-9751-6F794BAB4FED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shufl.API.Services", "Shufl.API.Services\Shufl.API.Services.csproj", "{8AEA2E7D-2E6C-48E2-B550-1CD0DD6463B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +51,14 @@ Global
 		{36ACEE10-B8BC-40DE-A539-5AA3E4D47899}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36ACEE10-B8BC-40DE-A539-5AA3E4D47899}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36ACEE10-B8BC-40DE-A539-5AA3E4D47899}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A914C6E-496E-479C-9751-6F794BAB4FED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A914C6E-496E-479C-9751-6F794BAB4FED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A914C6E-496E-479C-9751-6F794BAB4FED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A914C6E-496E-479C-9751-6F794BAB4FED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AEA2E7D-2E6C-48E2-B550-1CD0DD6463B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AEA2E7D-2E6C-48E2-B550-1CD0DD6463B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AEA2E7D-2E6C-48E2-B550-1CD0DD6463B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AEA2E7D-2E6C-48E2-B550-1CD0DD6463B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

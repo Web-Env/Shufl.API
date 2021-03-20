@@ -1,11 +1,18 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.AzureAppServices;
 using Microsoft.OpenApi.Models;
+using Shufl.API.Infrastructure.Extensions;
+using Shufl.API.Infrastructure.Mappers;
 using Shufl.API.Infrastructure.Settings;
+using Shufl.API.Services.Auth;
+using Shufl.Domain.Entities;
+using Shufl.Domain.Repositories;
+using Shufl.Domain.Repositories.Interfaces;
 
 namespace Shufl.API
 {
@@ -39,11 +46,18 @@ namespace Shufl.API
                     .SetIsOriginAllowed((host) => true));
             });
 
+            services.AddAsymmetricAuthentication();
+            services.AddTransient<AuthenticationService>();
+
             var smtpSettingsSection = Configuration.GetSection("SmtpSettings");
             var spotifyAPICredentialsSection = Configuration.GetSection("SpotifyAPICredentials");
             services.Configure<SmtpSettings>(smtpSettingsSection);
             services.Configure<SpotifyAPICredentials>(spotifyAPICredentialsSection);
             services.Configure<AzureFileLoggerOptions>(Configuration.GetSection("AzureLogging"));
+
+            services.Add(new ServiceDescriptor(typeof(IRepositoryManager), new RepositoryManager(ConfigureRepositoryContext())));
+            services.AddAutoMapper(typeof(UploadModelToEntity));
+            services.AddAutoMapper(typeof(EntityToDownloadModel));
 
             services.AddSwaggerGen(c =>
             {
@@ -79,6 +93,16 @@ namespace Shufl.API
                 string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
                 c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "Shufl");
             });
+        }
+
+        private ShuflContext ConfigureRepositoryContext()
+        {
+            var options = new DbContextOptionsBuilder<ShuflContext>()
+                .UseSqlServer(Configuration.GetConnectionString("ShuflDb"))
+                .Options;
+            ShuflContext context = new ShuflContext(options);
+
+            return context;
         }
     }
 }
