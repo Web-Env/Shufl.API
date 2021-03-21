@@ -13,6 +13,7 @@ using Shufl.API.Services.Auth;
 using Shufl.Domain.Entities;
 using Shufl.Domain.Repositories;
 using Shufl.Domain.Repositories.Interfaces;
+using WebEnv.Util.Mailer.Settings;
 
 namespace Shufl.API
 {

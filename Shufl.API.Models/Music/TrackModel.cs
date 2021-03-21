@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Shufl.API.Models
+namespace Shufl.API.Models.Music
 {
     public static class TrackModel
     {

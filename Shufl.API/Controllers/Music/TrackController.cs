@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shufl.API.Infrastructure.Settings;
-using Shufl.API.Models;
+using Shufl.API.Models.Music;
 using Shufl.Domain.Repositories.Interfaces;
 using System;
 using System.Threading.Tasks;
