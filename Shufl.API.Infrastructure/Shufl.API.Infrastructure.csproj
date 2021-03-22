@@ -5,11 +5,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Emails\Templates\UserPasswordReset.html" />
+    <None Remove="Emails\Templates\UserVerification.html" />
+    <None Remove="Emails\Templates\UserWelcomeVerification.html" />
     <None Remove="Encryption\Keys\shufl_private_key.xml" />
     <None Remove="Encryption\Keys\shufl_public_key.xml" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Emails\Templates\UserPasswordReset.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Emails\Templates\UserVerification.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Emails\Templates\UserWelcomeVerification.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Encryption\Keys\shufl_private_key.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -22,7 +34,7 @@
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.4" />
-    <PackageReference Include="Shufl.Domain" Version="1.0.0-CI-8" />
+    <PackageReference Include="Shufl.Domain" Version="1.0.0-CI-16" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.9.0" />
   </ItemGroup>
 

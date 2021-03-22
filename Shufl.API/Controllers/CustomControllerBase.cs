@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Shufl.API.UploadModels;
@@ -30,6 +31,13 @@ namespace Shufl.API.Controllers
         protected TEntity MapUploadModelToEntity<TEntity>(IUploadModel uploadModel)
         {
             return _mapper.Map<TEntity>(uploadModel);
+        }
+
+        protected string ExtractRequesterAddress(HttpRequest request)
+        {
+            var requesterAddress = Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            
+            return requesterAddress;
         }
 
         protected void LogException(Exception exception)
