@@ -1,6 +1,6 @@
 ﻿using Shufl.API.DownloadModels.Auth;
 using Shufl.API.UploadModels.Auth;
-using Shufl.Domain.Repositories.UserRepositories.Interfaces;
+using Shufl.Domain.Repositories.User.Interfaces;
 using System.Threading.Tasks;
 
 namespace Shufl.API.Services.Auth

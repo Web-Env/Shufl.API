@@ -1,11 +1,12 @@
 ﻿using Shufl.API.Infrastructure.Emails;
 using Shufl.API.Infrastructure.Emails.ViewModels;
+using Shufl.API.Infrastructure.Encryption;
 using Shufl.API.Infrastructure.Encryption.Helpers;
 using Shufl.API.Infrastructure.Enums;
 using Shufl.API.Infrastructure.Exceptions;
 using Shufl.Domain.Entities;
 using Shufl.Domain.Repositories.Interfaces;
-using Shufl.Domain.Repositories.UserRepositories.Interfaces;
+using Shufl.Domain.Repositories.User.Interfaces;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -163,7 +164,7 @@ namespace Shufl.API.Models.User
 
                     var verification = new UserVerification
                     {
-                        VerificationIdentifier = hashedVerificationIdentifier,
+                        Identifier = hashedVerificationIdentifier,
                         UserId = user.Id,
                         ExpiryDate = DateTime.Now.AddDays(7),
                         RequesterAddress = requesterAddress
@@ -217,24 +218,32 @@ namespace Shufl.API.Models.User
             string requesterAddress,
             IRepositoryManager repositoryManager)
         {
+            var decryptedResetIdentifier = DecryptionService.DecryptString(resetIdentifier);
+            var hashedResetIdentifier = HashingHelper.HashIdentifier(decryptedResetIdentifier);
             var (existsAndValid, passwordReset) = await CheckPasswordResetIdentifierExistsAndIsValidAsync(
-                resetIdentifier,
+                hashedResetIdentifier,
                 repositoryManager.PasswordResetRepository);
 
             if (existsAndValid)
             {
-                var user = await repositoryManager.UserRepository.GetByIdAsync(passwordReset.UserId);
+                var userId = Guid.Parse(DecryptionService.DecryptString(passwordReset.UserId));
+                var user = await repositoryManager.UserRepository.GetByIdAsync(userId);
 
                 user.Password = HashingHelper.HashPassword(newPassword);
                 user.LastUpdatedOn = DateTime.Now;
-                user.LastUpdatedBy = passwordReset.UserId;
+                user.LastUpdatedBy = userId;
 
                 passwordReset.Active = false;
                 passwordReset.UsedOn = DateTime.Now;
                 passwordReset.UsedByAddress = requesterAddress;
+                passwordReset.LastUpdatedOn = DateTime.Now;
 
                 await repositoryManager.UserRepository.UpdateAsync(user);
                 await repositoryManager.PasswordResetRepository.UpdateAsync(passwordReset);
+            }
+            else
+            {
+                throw new InvalidTokenException(InvalidTokenType.NoTokenFound, "The Password Reset Token is invalid");
             }
         }
 
@@ -287,23 +296,23 @@ namespace Shufl.API.Models.User
             {
                 try
                 {
-                    await DeactivateExistingResetPasswordsAsync(user.Id, repositoryManager.PasswordResetRepository);
-
                     var emailService = new EmailService();
                     var resetIdentifier = ModelHelpers.GenerateUniqueIdentifier();
                     var hashedResetIdentifier = HashingHelper.HashIdentifier(resetIdentifier);
+                    var encryptedUserId = EncryptionService.EncryptString(user.Id.ToString());
+                    var encryptedIdentifier = EncryptionService.EncryptString(resetIdentifier);
 
                     var passwordReset = new PasswordReset
                     {
-                        ResetIdentifier = hashedResetIdentifier,
-                        UserId = user.Id,
-                        ExpiryDate = DateTime.Now.AddDays(1),
+                        Identifier = hashedResetIdentifier,
+                        UserId = encryptedUserId,
+                        ExpiryDate = DateTime.Now.AddHours(1),
                         RequesterAddress = requesterAddress
                     };
                     var verificationViewModel = new LinkEmailViewModel
                     {
                         FullName = $"{user.FirstName} {user.LastName}",
-                        Link = hashedResetIdentifier
+                        Link = encryptedIdentifier
                     };
 
                     await repositoryManager.PasswordResetRepository.AddAsync(passwordReset);
@@ -321,22 +330,6 @@ namespace Shufl.API.Models.User
                 {
                     throw;
                 }
-            }
-        }
-
-        private static async Task DeactivateExistingResetPasswordsAsync(Guid userId, IPasswordResetRepository resetRepository)
-        {
-            var passwordResets = await resetRepository.FindAsync(uv => uv.UserId == userId && (bool)uv.Active);
-
-            if (passwordResets.Any())
-            {
-                foreach (PasswordReset passwordReset in passwordResets)
-                {
-                    passwordReset.Active = false;
-                    passwordReset.LastUpdatedOn = DateTime.Now;
-                }
-
-                await resetRepository.UpdateRangeAsync(passwordResets);
             }
         }
     }

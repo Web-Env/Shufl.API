@@ -5,7 +5,7 @@ using Shufl.API.Infrastructure.Encryption.Certificates;
 using Shufl.API.Infrastructure.Encryption.Helpers;
 using Shufl.API.Infrastructure.Exceptions;
 using Shufl.API.UploadModels.Auth;
-using Shufl.Domain.Repositories.UserRepositories.Interfaces;
+using Shufl.Domain.Repositories.User.Interfaces;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;

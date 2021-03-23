@@ -10,7 +10,7 @@ namespace Shufl.API.Infrastructure.Emails
         private static string FetchEmailTemplateString(string templateUri)
         {
             var htmlString = File.ReadAllText(
-                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Emails/Templates/{templateUri}"),
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"Emails/Templates/{templateUri}.html"),
                 Encoding.UTF8);
 
             return htmlString;
@@ -31,17 +31,17 @@ namespace Shufl.API.Infrastructure.Emails
 
         public static string CreateWelcomeVerificationEmailString(LinkEmailViewModel welcomeVerificationViewModel)
         {
-            return CreateLinkEmailString("UserWelcomeVerification.html", welcomeVerificationViewModel);
+            return CreateLinkEmailString("UserWelcomeVerification", welcomeVerificationViewModel);
         }
 
         public static string CreateVerificationEmailString(LinkEmailViewModel verificationViewModel)
         {
-            return CreateLinkEmailString("UserVerification.html", verificationViewModel);
+            return CreateLinkEmailString("UserVerification", verificationViewModel);
         }
 
         public static string CreatePasswordResetEmailString(LinkEmailViewModel passwordResetViewModel)
         {
-            return CreateLinkEmailString("UserPasswordReset.html", passwordResetViewModel);
+            return CreateLinkEmailString("UserPasswordReset", passwordResetViewModel);
         }
 
         private static string CreateLinkEmailString(string htmlFile, LinkEmailViewModel linkEmailViewModel)
@@ -52,7 +52,12 @@ namespace Shufl.API.Infrastructure.Emails
                 linkEmailViewModel.FullName,
                 linkEmailViewModel.Link);
 
-            return formattedHtmlString;
+            var templateBaseHtmlString = FetchEmailTemplateString("TemplateBase");
+            var completeHtmlString = FormatHtmlString(
+                templateBaseHtmlString,
+                formattedHtmlString);
+
+            return completeHtmlString;
         }
     }
 }
