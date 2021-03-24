@@ -2,6 +2,9 @@
 {
     public class EmailAlreadyRegisteredException : ExceptionBase
     {
-        public EmailAlreadyRegisteredException(string errorMessage, string errorData) : base(errorMessage, errorData) { }
+        public EmailAlreadyRegisteredException(string errorMessage, string errorData) : base(errorMessage, errorData)
+        {
+            ErrorType = nameof(EmailAlreadyRegisteredException);
+        }
     }
 }

@@ -17,22 +17,37 @@ namespace Shufl.API.Models.User
 {
     public static class UserModel
     {
+        public static async Task<bool> CheckUsernameUniqueAsync(string username, IUserRepository userRepository)
+        {
+            var userWithUsername = await userRepository.FindByUsernameAsync(username);
+            return userWithUsername == null;
+        }
+
         public static async Task CreateNewUserAsync(
             Domain.Entities.User user,
             string requesterAddress,
             IRepositoryManager repositoryManager,
             SmtpSettings smtpSettings)
         {
-            var (exists, _) = await CheckUserExistsWithEmailAsync(user.Email, repositoryManager.UserRepository);
+            var (emailExists, _) = await CheckUserExistsWithEmailAsync(user.Email, repositoryManager.UserRepository);
+            var (usernameExists, _) = await CheckUserExistsWithUsernameAsync(user.Username, repositoryManager.UserRepository);
 
-            if (exists)
+            if (emailExists)
             {
                 throw (new EmailAlreadyRegisteredException(
                     "A User with this email address already exists",
                     "A User with this email address already exists"
                 ));
             }
+            if (usernameExists)
+            {
+                throw (new UsernameAlreadyRegisteredException(
+                    "A User with this username already exists",
+                    "A User with this username already exists"
+                ));
+            }
 
+            user.DisplayName = $"{user.FirstName} {user.LastName}";
             user.Password = HashingHelper.HashPassword(user.Password);
             user.CreatedOn = DateTime.Now;
 
@@ -71,6 +86,19 @@ namespace Shufl.API.Models.User
             return (false, null);
         }
 
+        private static async Task<(bool exists, Domain.Entities.User user)> CheckUserExistsWithUsernameAsync(
+            string username,
+            IUserRepository userRepository)
+        {
+            var existingUsername = await userRepository.FindByUsernameAsync(username);
+            if (existingUsername != null)
+            {
+                return (true, existingUsername);
+            }
+
+            return (false, null);
+        }
+
         public static async Task VerifyUserAsync(
             string verificationIdentifier,
             string requesterAddress,
@@ -82,7 +110,7 @@ namespace Shufl.API.Models.User
 
             if (verificationIdentifierIsValid)
             {
-                var userVerification = await repositoryManager.UserVerificationRepository.FetchByIdentifier(verificationIdentifier);
+                var userVerification = await repositoryManager.UserVerificationRepository.FindByIdentifierAsync(verificationIdentifier);
                 var user = await repositoryManager.UserRepository.GetByIdAsync(userVerification.UserId);
 
                 userVerification.Active = false;
@@ -103,7 +131,7 @@ namespace Shufl.API.Models.User
             string verificationIdentifier,
             IUserVerificationRepository userVerificationRepository)
         {
-            var userVerification = await userVerificationRepository.FetchByIdentifier(
+            var userVerification = await userVerificationRepository.FindByIdentifierAsync(
                 verificationIdentifier);
 
             if (userVerification != null)
@@ -144,7 +172,7 @@ namespace Shufl.API.Models.User
         {
             var (exists, user) = await CheckUserExistsWithEmailAsync(email, repositoryManager.UserRepository);
 
-            if ((bool)user.IsVerified)
+            if (user.IsVerified)
             {
                 throw new UserAlreadyVerifiedException("User has already been verified", "User has already been verified");
             }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -13,6 +14,7 @@ using WebEnv.Util.Mailer.Settings;
 namespace Shufl.API.Controllers.User
 {
     [ApiController]
+    [AllowAnonymous]
     [Route("[controller]")]
     public class UserController : CustomControllerBase
     {
@@ -23,6 +25,28 @@ namespace Shufl.API.Controllers.User
                               ILogger<UserController> logger) : base(repositoryManager, logger, mapper)
         {
             _smtpSettings = smtpSettings.Value;
+        }
+
+        [HttpGet("CheckUsernameUnique")]
+        public async Task<IActionResult> CheckUsernameUnique(string username)
+        {
+            if (string.IsNullOrWhiteSpace(username) || username.Length < 4)
+            {
+                return new BadRequestObjectResult("Username must be at least 4 characters");
+            }
+
+            try
+            {
+                var usernameUnique = await UserModel.CheckUsernameUniqueAsync(username, RepositoryManager.UserRepository);
+
+                return Ok(usernameUnique);
+            }
+            catch(Exception err)
+            {
+                LogException(err);
+
+                throw;
+            }
         }
 
         [HttpPost("Register")]
@@ -43,6 +67,10 @@ namespace Shufl.API.Controllers.User
             catch (EmailAlreadyRegisteredException err)
             {
                 return BadRequest(new EmailAlreadyRegisteredException(err.ErrorMessage, err.ErrorData));
+            }
+            catch (UsernameAlreadyRegisteredException err)
+            {
+                return BadRequest(new UsernameAlreadyRegisteredException(err.ErrorMessage, err.ErrorData));
             }
             catch (Exception err)
             {
@@ -76,7 +104,7 @@ namespace Shufl.API.Controllers.User
             }
         }
 
-        [HttpPost("Verify/Validate")]
+        [HttpGet("Verify/Validate")]
         public async Task<IActionResult> ValidateVerificationIdentifier(string verificationIdentifier)
         {
             try

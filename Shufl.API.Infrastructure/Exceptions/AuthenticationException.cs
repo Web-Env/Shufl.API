@@ -2,6 +2,9 @@
 {
     public class AuthenticationException : ExceptionBase
     {
-        public AuthenticationException(string errorMessage, string errorData) : base(errorMessage, errorData) { }
+        public AuthenticationException(string errorMessage, string errorData) : base(errorMessage, errorData)
+        {
+            ErrorType = nameof(AuthenticationException);
+        }
     }
 }
