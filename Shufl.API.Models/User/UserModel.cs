@@ -318,7 +318,8 @@ namespace Shufl.API.Models.User
             IRepositoryManager repositoryManager,
             SmtpSettings smtpSettings)
         {
-            var (exists, user) = await CheckUserExistsWithEmailAsync(email, repositoryManager.UserRepository);
+            var (exists, user) = await CheckUserExistsWithEmailAsync(email, repositoryManager.UserRepository)
+                .ConfigureAwait(false);
 
             if (exists)
             {
