@@ -18,8 +18,6 @@ namespace Shufl.API.Services.Auth
     {
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest model, IUserRepository userRepository)
         {
-            var hashedPassword = HashingHelper.HashPassword(model.Password);
-
             var user = (await userRepository.FindAsync(u =>
                             u.Email == model.Email
                         )).FirstOrDefault();

@@ -29,8 +29,10 @@ namespace Shufl.API.Models.User
             IRepositoryManager repositoryManager,
             SmtpSettings smtpSettings)
         {
-            var (emailExists, _) = await CheckUserExistsWithEmailAsync(user.Email, repositoryManager.UserRepository);
-            var (usernameExists, _) = await CheckUserExistsWithUsernameAsync(user.Username, repositoryManager.UserRepository);
+            var (emailExists, _) = await CheckUserExistsWithEmailAsync(user.Email, repositoryManager.UserRepository)
+                .ConfigureAwait(false);
+            var (usernameExists, _) = await CheckUserExistsWithUsernameAsync(user.Username, repositoryManager.UserRepository)
+                .ConfigureAwait(false);
 
             if (emailExists)
             {
@@ -53,18 +55,14 @@ namespace Shufl.API.Models.User
 
             try
             {
-                var emailService = new EmailService();
-                var verificationIdentifier = ModelHelpers.GenerateUniqueIdentifier();
-                var hashedVerificationIdentifier = HashingHelper.HashIdentifier(verificationIdentifier);
-
-                var newUser = await repositoryManager.UserRepository.AddAsync(user);
+                await repositoryManager.UserRepository.AddAsync(user);
 
                 await CreateNewVerficationAsync(
                     user.Email,
                     requesterAddress,
                     repositoryManager,
                     smtpSettings,
-                    isFirstContact: true);
+                    isFirstContact: true).ConfigureAwait(false);
 
             }
             catch (Exception)
@@ -106,7 +104,7 @@ namespace Shufl.API.Models.User
         {
             var verificationIdentifierIsValid = await ValidateVerificationIdentifierAsync(
                     verificationIdentifier,
-                    repositoryManager.UserVerificationRepository);
+                    repositoryManager.UserVerificationRepository).ConfigureAwait(false);
 
             if (verificationIdentifierIsValid)
             {
@@ -170,7 +168,8 @@ namespace Shufl.API.Models.User
             bool isFirstContact = false
             )
         {
-            var (exists, user) = await CheckUserExistsWithEmailAsync(email, repositoryManager.UserRepository);
+            var (exists, user) = await CheckUserExistsWithEmailAsync(email, repositoryManager.UserRepository)
+                .ConfigureAwait(false);
 
             if (user.IsVerified)
             {
@@ -179,7 +178,8 @@ namespace Shufl.API.Models.User
 
             if (!isFirstContact)
             {
-                await DeactivateExistingUserVerificationsAsync(user.Id, repositoryManager.UserVerificationRepository);
+                await DeactivateExistingUserVerificationsAsync(user.Id, repositoryManager.UserVerificationRepository)
+                    .ConfigureAwait(false);
             }
 
             if (exists)
@@ -250,7 +250,7 @@ namespace Shufl.API.Models.User
             var hashedResetIdentifier = HashingHelper.HashIdentifier(decryptedResetIdentifier);
             var (existsAndValid, passwordReset) = await CheckPasswordResetIdentifierExistsAndIsValidAsync(
                 hashedResetIdentifier,
-                repositoryManager.PasswordResetRepository);
+                repositoryManager.PasswordResetRepository).ConfigureAwait(false);
 
             if (existsAndValid)
             {
