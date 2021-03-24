@@ -6,16 +6,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.4" />
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="5.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Shufl.Domain" Version="1.0.0-CI-20" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.0" />
+    <PackageReference Include="WebEnv.Util.Mailer" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Shufl.API.DownloadModels\Shufl.API.DownloadModels.csproj" />
     <ProjectReference Include="..\Shufl.API.Infrastructure\Shufl.API.Infrastructure.csproj" />
     <ProjectReference Include="..\Shufl.API.Models\Shufl.API.Models.csproj" />
+    <ProjectReference Include="..\Shufl.API.Services\Shufl.API.Services.csproj" />
+    <ProjectReference Include="..\Shufl.API.UploadModels\Shufl.API.UploadModels.csproj" />
   </ItemGroup>
 
 

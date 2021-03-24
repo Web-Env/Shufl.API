@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Shufl.API.Controllers
+namespace Shufl.API.Controllers.Music
 {
     [ApiController]
     [Route("[controller]")]

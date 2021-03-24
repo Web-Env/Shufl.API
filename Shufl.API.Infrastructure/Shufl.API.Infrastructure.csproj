@@ -4,4 +4,47 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Emails\Templates\TemplateBase.html" />
+    <None Remove="Emails\Templates\UserPasswordReset.html" />
+    <None Remove="Emails\Templates\UserVerification.html" />
+    <None Remove="Emails\Templates\UserWelcomeVerification.html" />
+    <None Remove="Encryption\Keys\shufl_private_key.xml" />
+    <None Remove="Encryption\Keys\shufl_public_key.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Emails\Templates\TemplateBase.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Emails\Templates\UserPasswordReset.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Emails\Templates\UserVerification.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Emails\Templates\UserWelcomeVerification.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Encryption\Keys\shufl_private_key.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Encryption\Keys\shufl_public_key.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.4" />
+    <PackageReference Include="Shufl.Domain" Version="1.0.0-CI-20" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shufl.API.DownloadModels\Shufl.API.DownloadModels.csproj" />
+    <ProjectReference Include="..\Shufl.API.UploadModels\Shufl.API.UploadModels.csproj" />
+  </ItemGroup>
+
 </Project>

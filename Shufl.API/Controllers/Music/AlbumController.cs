@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Shufl.API.Controllers;
 using Shufl.API.Infrastructure.Settings;
-using Shufl.API.Models;
+using Shufl.API.Models.Music;
+using Shufl.Domain.Repositories.Interfaces;
 using System;
 using System.Threading.Tasks;
 
-namespace Shufl.API.Properties
+namespace Shufl.API.Controllers.Music
 {
     [ApiController]
     [Route("[controller]")]
@@ -15,7 +16,10 @@ namespace Shufl.API.Properties
     {
         private readonly SpotifyAPICredentials _spotifyAPICredentials;
 
-        public AlbumController(ILogger<AlbumController> logger, IOptions<SpotifyAPICredentials> spotifyAPICredentials) : base(logger)
+        public AlbumController(IRepositoryManager repositoryManager,
+                               ILogger<AlbumController> logger,
+                               IMapper mapper,
+                               IOptions<SpotifyAPICredentials> spotifyAPICredentials) : base(repositoryManager, logger, mapper)
         {
             _spotifyAPICredentials = spotifyAPICredentials.Value;
         }
@@ -36,7 +40,7 @@ namespace Shufl.API.Properties
                 }
                 else
                 {
-                    Logger.LogError(err, err.Message);
+                    LogException(err);
                     return Problem("There was an error fetching a random album from Spotify", statusCode: 500, type: err.GetType().ToString());
                 }
             }
@@ -52,7 +56,7 @@ namespace Shufl.API.Properties
             }
             catch (Exception err)
             {
-                Logger.LogError(err, err.Message);
+                LogException(err);
                 return Problem("There was an error fetching the requested album from Spotify", statusCode: 500, type: err.GetType().ToString());
             }
         }
@@ -70,7 +74,7 @@ namespace Shufl.API.Properties
             }
             catch (Exception err)
             {
-                Logger.LogError(err, err.Message);
+                LogException(err);
                 return Problem("There was an error searching for the album from Spotify", statusCode: 500, type: err.GetType().ToString());
             }
         }
