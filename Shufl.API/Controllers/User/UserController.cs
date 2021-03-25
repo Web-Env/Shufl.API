@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shufl.API.Infrastructure.Exceptions;
+using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models.User;
 using Shufl.API.UploadModels.User;
 using Shufl.Domain.Entities;
@@ -19,12 +20,15 @@ namespace Shufl.API.Controllers.User
     public class UserController : CustomControllerBase
     {
         private readonly SmtpSettings _smtpSettings;
+        private readonly EmailSettings _emailSettings;
         public UserController(ShuflContext shuflContext,
                               IMapper mapper,
                               IOptions<SmtpSettings> smtpSettings,
+                              IOptions<EmailSettings> emailSettings,
                               ILogger<UserController> logger) : base(shuflContext, logger, mapper)
         {
             _smtpSettings = smtpSettings.Value;
+            _emailSettings = emailSettings.Value;
         }
 
         [HttpGet("CheckUsernameUnique")]
@@ -59,7 +63,8 @@ namespace Shufl.API.Controllers.User
                     newUser,
                     ExtractRequesterAddress(Request),
                     RepositoryManager,
-                    _smtpSettings
+                    _smtpSettings,
+                    _emailSettings
                     );
 
                 return Ok();
@@ -133,15 +138,16 @@ namespace Shufl.API.Controllers.User
         }
 
         [HttpPost("Verify/New")]
-        public async Task<IActionResult> CreateNewVerification(string emailAddress)
+        public async Task<IActionResult> CreateNewVerification(string email)
         {
             try
             {
                 await UserModel.CreateNewVerficationAsync(
-                    emailAddress,
+                    email,
                     ExtractRequesterAddress(Request),
                     RepositoryManager,
-                    _smtpSettings);
+                    _smtpSettings,
+                    _emailSettings);
 
                 return Ok();
             }
@@ -158,13 +164,13 @@ namespace Shufl.API.Controllers.User
         }
 
         [HttpPost("ForgotPassword")]
-        public async Task<IActionResult> ResetPassword(string resetIdentifier, string newPassword)
+        public async Task<IActionResult> ResetPassword(PasswordResetUploadModel passwordResetUploadModel)
         {
             try
             {
                 await UserModel.ResetPasswordAsync(
-                    resetIdentifier,
-                    newPassword,
+                    passwordResetUploadModel.PasswordResetToken,
+                    passwordResetUploadModel.NewPassword,
                     ExtractRequesterAddress(Request),
                     RepositoryManager);
 
@@ -211,15 +217,16 @@ namespace Shufl.API.Controllers.User
         }
 
         [HttpPost("ForgotPassword/New")]
-        public async Task<IActionResult> CreateNewResetPassword(string emailAddress)
+        public async Task<IActionResult> CreateNewResetPassword(PasswordResetRequestUploadModel passwordResetRequestUploadModel)
         {
             try
             {
                 await UserModel.CreateNewResetPasswordAsync(
-                    emailAddress,
+                    passwordResetRequestUploadModel.Email,
                     ExtractRequesterAddress(Request),
                     RepositoryManager,
-                    _smtpSettings);
+                    _smtpSettings,
+                    _emailSettings);
 
                 return Ok();
             }

@@ -4,6 +4,7 @@ using Shufl.API.Infrastructure.Encryption;
 using Shufl.API.Infrastructure.Encryption.Helpers;
 using Shufl.API.Infrastructure.Enums;
 using Shufl.API.Infrastructure.Exceptions;
+using Shufl.API.Infrastructure.Settings;
 using Shufl.Domain.Entities;
 using Shufl.Domain.Repositories.Interfaces;
 using Shufl.Domain.Repositories.User.Interfaces;
@@ -33,7 +34,8 @@ namespace Shufl.API.Models.User
             Domain.Entities.User user,
             string requesterAddress,
             IRepositoryManager repositoryManager,
-            SmtpSettings smtpSettings)
+            SmtpSettings smtpSettings,
+            EmailSettings emailSettings)
         {
             var (emailExists, _) = await CheckUserExistsWithEmailAsync(user.Email, repositoryManager.UserRepository)
                 .ConfigureAwait(false);
@@ -68,6 +70,7 @@ namespace Shufl.API.Models.User
                     requesterAddress,
                     repositoryManager,
                     smtpSettings,
+                    emailSettings,
                     isFirstContact: true).ConfigureAwait(false);
 
             }
@@ -172,6 +175,7 @@ namespace Shufl.API.Models.User
             string requesterAddress,
             IRepositoryManager repositoryManager,
             SmtpSettings smtpSettings,
+            EmailSettings emailSettings,
             bool isFirstContact = false
             )
         {
@@ -207,6 +211,7 @@ namespace Shufl.API.Models.User
                     var verificationViewModel = new LinkEmailViewModel
                     {
                         FullName = $"{user.FirstName} {user.LastName}",
+                        UrlDomain = emailSettings.PrimaryRedirectDomain,
                         Link = verificationIdentifier
                     };
 
@@ -337,7 +342,8 @@ namespace Shufl.API.Models.User
             string email,
             string requesterAddress,
             IRepositoryManager repositoryManager,
-            SmtpSettings smtpSettings)
+            SmtpSettings smtpSettings,
+            EmailSettings emailSettings)
         {
             var (exists, user) = await CheckUserExistsWithEmailAsync(email, repositoryManager.UserRepository)
                 .ConfigureAwait(false);
@@ -363,6 +369,7 @@ namespace Shufl.API.Models.User
                     var verificationViewModel = new LinkEmailViewModel
                     {
                         FullName = $"{user.FirstName} {user.LastName}",
+                        UrlDomain = emailSettings.PrimaryRedirectDomain,
                         Link = encodedEncryptedIdentifier
                     };
 

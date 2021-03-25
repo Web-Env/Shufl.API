@@ -12,8 +12,6 @@ using Shufl.API.Infrastructure.Mappers;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Services.Auth;
 using Shufl.Domain.Entities;
-using Shufl.Domain.Repositories;
-using Shufl.Domain.Repositories.Interfaces;
 using System.Collections.Generic;
 using WebEnv.Util.Mailer.Settings;
 
@@ -54,11 +52,13 @@ namespace Shufl.API
 
             services.AddDbContext<ShuflContext>(options =>
                  options.UseSqlServer(Configuration.GetConnectionString("ShuflDb")),
-                 ServiceLifetime.Transient);
+                 ServiceLifetime.Scoped);
 
             var smtpSettingsSection = Configuration.GetSection("SmtpSettings");
+            var emailSettings = Configuration.GetSection("EmailSettings");
             var spotifyAPICredentialsSection = Configuration.GetSection("SpotifyAPICredentials");
             services.Configure<SmtpSettings>(smtpSettingsSection);
+            services.Configure<EmailSettings>(emailSettings);
             services.Configure<SpotifyAPICredentials>(spotifyAPICredentialsSection);
             services.Configure<AzureFileLoggerOptions>(Configuration.GetSection("AzureLogging"));
             services.AddAutoMapper(typeof(UploadModelToEntity));
