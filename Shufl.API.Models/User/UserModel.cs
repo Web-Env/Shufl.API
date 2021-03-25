@@ -17,6 +17,12 @@ namespace Shufl.API.Models.User
 {
     public static class UserModel
     {
+        public static async Task<bool> CheckUserExistsByIdAsync(Guid userId, IUserRepository userRepository)
+        {
+            var user = await userRepository.GetByIdAsync(userId);
+            return user != null;
+        }
+
         public static async Task<bool> CheckUsernameUniqueAsync(string username, IUserRepository userRepository)
         {
             var userWithUsername = await userRepository.FindByUsernameAsync(username);

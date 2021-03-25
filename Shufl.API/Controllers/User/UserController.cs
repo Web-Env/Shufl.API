@@ -45,7 +45,7 @@ namespace Shufl.API.Controllers.User
             {
                 LogException(err);
 
-                throw;
+                return Problem();
             }
         }
 
@@ -76,7 +76,7 @@ namespace Shufl.API.Controllers.User
             {
                 LogException(err);
 
-                throw;
+                return Problem();
             }
         }
 
@@ -100,7 +100,7 @@ namespace Shufl.API.Controllers.User
             {
                 LogException(err);
 
-                return BadRequest();
+                return Problem();
             }
         }
 
@@ -128,7 +128,7 @@ namespace Shufl.API.Controllers.User
             {
                 LogException(err);
 
-                return BadRequest();
+                return Problem();
             }
         }
 
@@ -153,7 +153,7 @@ namespace Shufl.API.Controllers.User
             {
                 LogException(err);
 
-                return BadRequest();
+                return Problem();
             }
         }
 
@@ -178,7 +178,7 @@ namespace Shufl.API.Controllers.User
             {
                 LogException(err);
 
-                return BadRequest();
+                return Problem();
             }
         }
 
@@ -199,7 +199,7 @@ namespace Shufl.API.Controllers.User
             {
                 LogException(err);
 
-                return BadRequest();
+                return Problem();
             }
         }
     }

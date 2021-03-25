@@ -29,7 +29,6 @@ namespace Shufl.API.Services.Auth
                     var encryptedUserId = EncryptionService.EncryptUserId(user.Id);
                     var authenticationResponse = new AuthenticationResponse
                     {
-                        UserId = encryptedUserId,
                         Token = GenerateJwtToken(encryptedUserId),
                         Username = user.Username,
                         DisplayName = user.DisplayName,
