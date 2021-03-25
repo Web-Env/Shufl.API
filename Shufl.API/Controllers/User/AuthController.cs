@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 namespace Shufl.API.Controllers.User
 {
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
     public class AuthController : CustomControllerBase
     {
@@ -40,7 +41,7 @@ namespace Shufl.API.Controllers.User
             }
         }
 
-        [HttpPost("validate")]
+        [HttpGet("validate")]
         public IActionResult Validate()
         {
             return Ok();

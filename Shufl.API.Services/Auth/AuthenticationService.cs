@@ -2,7 +2,6 @@
 using Shufl.API.DownloadModels.Auth;
 using Shufl.API.Infrastructure.Encryption;
 using Shufl.API.Infrastructure.Encryption.Certificates;
-using Shufl.API.Infrastructure.Encryption.Helpers;
 using Shufl.API.Infrastructure.Exceptions;
 using Shufl.API.UploadModels.Auth;
 using Shufl.Domain.Repositories.User.Interfaces;

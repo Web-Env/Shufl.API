@@ -102,6 +102,7 @@ namespace Shufl.API.Models.User
             string requesterAddress,
             IRepositoryManager repositoryManager)
         {
+            verificationIdentifier = HashingHelper.HashIdentifier(verificationIdentifier);
             var verificationIdentifierIsValid = await ValidateVerificationIdentifierAsync(
                     verificationIdentifier,
                     repositoryManager.UserVerificationRepository).ConfigureAwait(false);
