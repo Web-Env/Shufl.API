@@ -8,7 +8,7 @@ using Shufl.API.Infrastructure.Exceptions;
 using Shufl.API.Models.User;
 using Shufl.API.Services.Auth;
 using Shufl.API.UploadModels.Auth;
-using Shufl.Domain.Repositories.Interfaces;
+using Shufl.Domain.Entities;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -21,10 +21,10 @@ namespace Shufl.API.Controllers.User
     public class AuthController : CustomControllerBase
     {
         private readonly AuthenticationService _authenticationService;
-        public AuthController(IRepositoryManager repositoryManager,
+        public AuthController(ShuflContext dbContext,
                               IMapper mapper,
                               ILogger<AuthController> logger,
-                              AuthenticationService authenticationService) : base(repositoryManager, logger, mapper) 
+                              AuthenticationService authenticationService) : base(dbContext, logger, mapper) 
         {
             _authenticationService = authenticationService;
         }

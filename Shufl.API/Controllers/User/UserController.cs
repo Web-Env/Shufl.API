@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Shufl.API.Infrastructure.Exceptions;
 using Shufl.API.Models.User;
 using Shufl.API.UploadModels.User;
-using Shufl.Domain.Repositories.Interfaces;
+using Shufl.Domain.Entities;
 using System;
 using System.Threading.Tasks;
 using WebEnv.Util.Mailer.Settings;
@@ -19,10 +19,10 @@ namespace Shufl.API.Controllers.User
     public class UserController : CustomControllerBase
     {
         private readonly SmtpSettings _smtpSettings;
-        public UserController(IRepositoryManager repositoryManager,
+        public UserController(ShuflContext shuflContext,
                               IMapper mapper,
                               IOptions<SmtpSettings> smtpSettings,
-                              ILogger<UserController> logger) : base(repositoryManager, logger, mapper)
+                              ILogger<UserController> logger) : base(shuflContext, logger, mapper)
         {
             _smtpSettings = smtpSettings.Value;
         }
