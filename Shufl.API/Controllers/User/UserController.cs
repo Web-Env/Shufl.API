@@ -182,6 +182,34 @@ namespace Shufl.API.Controllers.User
             }
         }
 
+        [HttpGet("ForgotPassword/Validate")]
+        public async Task<IActionResult> ValidatePasswordResetToken(string passwordResetToken)
+        {
+            try
+            {
+                var passwordResetTokenIsValid = await UserModel.ValidatePasswordResetTokenAsync(
+                    passwordResetToken,
+                    RepositoryManager.PasswordResetRepository);
+
+                if (passwordResetTokenIsValid)
+                {
+                    return Ok();
+                }
+
+                return BadRequest();
+            }
+            catch (InvalidTokenException err)
+            {
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorData));
+            }
+            catch (Exception err)
+            {
+                LogException(err);
+
+                return Problem();
+            }
+        }
+
         [HttpPost("ForgotPassword/New")]
         public async Task<IActionResult> CreateNewResetPassword(string emailAddress)
         {

@@ -247,14 +247,28 @@ namespace Shufl.API.Models.User
             }
         }
 
+        public static async Task<bool> ValidatePasswordResetTokenAsync(
+            string passwordResetToken,
+            IPasswordResetRepository passwordResetRepository)
+        {
+            var decryptedResetToken = DecryptionService.DecryptString(passwordResetToken);
+            var hashedResetIdentifier = HashingHelper.HashIdentifier(decryptedResetToken);
+            var (existsAndValid, _) = await CheckPasswordResetIdentifierExistsAndIsValidAsync(
+                hashedResetIdentifier,
+                passwordResetRepository).ConfigureAwait(false);
+
+            return existsAndValid;
+        }
+
+
         public static async Task ResetPasswordAsync(
-            string resetIdentifier,
+            string passwordResetToken,
             string newPassword,
             string requesterAddress,
             IRepositoryManager repositoryManager)
         {
-            var decryptedResetIdentifier = DecryptionService.DecryptString(resetIdentifier);
-            var hashedResetIdentifier = HashingHelper.HashIdentifier(decryptedResetIdentifier);
+            var decryptedResetToken = DecryptionService.DecryptString(passwordResetToken);
+            var hashedResetIdentifier = HashingHelper.HashIdentifier(decryptedResetToken);
             var (existsAndValid, passwordReset) = await CheckPasswordResetIdentifierExistsAndIsValidAsync(
                 hashedResetIdentifier,
                 repositoryManager.PasswordResetRepository).ConfigureAwait(false);
@@ -337,6 +351,7 @@ namespace Shufl.API.Models.User
                     var hashedResetIdentifier = HashingHelper.HashIdentifier(resetIdentifier);
                     var encryptedUserId = EncryptionService.EncryptString(user.Id.ToString());
                     var encryptedIdentifier = EncryptionService.EncryptString(resetIdentifier);
+                    var encodedEncryptedIdentifier = System.Web.HttpUtility.UrlEncode(encryptedIdentifier);
 
                     var passwordReset = new PasswordReset
                     {
@@ -348,7 +363,7 @@ namespace Shufl.API.Models.User
                     var verificationViewModel = new LinkEmailViewModel
                     {
                         FullName = $"{user.FirstName} {user.LastName}",
-                        Link = encryptedIdentifier
+                        Link = encodedEncryptedIdentifier
                     };
 
                     await repositoryManager.PasswordResetRepository.AddAsync(passwordReset);
