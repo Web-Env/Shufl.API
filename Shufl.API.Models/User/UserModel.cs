@@ -182,21 +182,20 @@ namespace Shufl.API.Models.User
             var (exists, user) = await CheckUserExistsWithEmailAsync(email, repositoryManager.UserRepository)
                 .ConfigureAwait(false);
 
-            if (user.IsVerified)
-            {
-                throw new UserAlreadyVerifiedException("User has already been verified", "User has already been verified");
-            }
-
-            if (!isFirstContact)
-            {
-                await DeactivateExistingUserVerificationsAsync(user.Id, repositoryManager.UserVerificationRepository)
-                    .ConfigureAwait(false);
-            }
-
             if (exists)
             {
+                if (user.IsVerified)
+                {
+                    throw new UserAlreadyVerifiedException("User has already been verified", "User has already been verified");
+                }
+
                 try
                 {
+                    if (!isFirstContact)
+                    {
+                        await DeactivateExistingUserVerificationsAsync(user.Id, repositoryManager.UserVerificationRepository)
+                            .ConfigureAwait(false);
+                    }
                     var emailService = new EmailService();
                     var verificationIdentifier = ModelHelpers.GenerateUniqueIdentifier();
                     var hashedVerificationIdentifier = HashingHelper.HashIdentifier(verificationIdentifier);
