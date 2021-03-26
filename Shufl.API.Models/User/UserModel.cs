@@ -1,4 +1,5 @@
-﻿using Shufl.API.Infrastructure.Emails;
+﻿using Shufl.API.Infrastructure.Consts;
+using Shufl.API.Infrastructure.Emails;
 using Shufl.API.Infrastructure.Emails.ViewModels;
 using Shufl.API.Infrastructure.Encryption;
 using Shufl.API.Infrastructure.Encryption.Helpers;
@@ -197,7 +198,7 @@ namespace Shufl.API.Models.User
                             .ConfigureAwait(false);
                     }
                     var emailService = new EmailService();
-                    var verificationIdentifier = ModelHelpers.GenerateUniqueIdentifier();
+                    var verificationIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.UserIdentifierLength);
                     var hashedVerificationIdentifier = HashingHelper.HashIdentifier(verificationIdentifier);
 
                     var verification = new UserVerification
@@ -352,7 +353,7 @@ namespace Shufl.API.Models.User
                 try
                 {
                     var emailService = new EmailService();
-                    var resetIdentifier = ModelHelpers.GenerateUniqueIdentifier();
+                    var resetIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.UserIdentifierLength);
                     var hashedResetIdentifier = HashingHelper.HashIdentifier(resetIdentifier);
                     var encryptedUserId = EncryptionService.EncryptString(user.Id.ToString());
                     var encryptedIdentifier = EncryptionService.EncryptString(resetIdentifier);

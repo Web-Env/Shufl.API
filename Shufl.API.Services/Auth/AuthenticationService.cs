@@ -1,6 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Shufl.API.DownloadModels.Auth;
-using Shufl.API.Infrastructure.Encryption;
 using Shufl.API.Infrastructure.Encryption.Certificates;
 using Shufl.API.Infrastructure.Exceptions;
 using Shufl.API.UploadModels.Auth;
@@ -26,10 +25,9 @@ namespace Shufl.API.Services.Auth
                 var passwordIsCorrect = BCrypt.Net.BCrypt.Verify(model.Password, user.Password);
                 if (passwordIsCorrect)
                 {
-                    var encryptedUserId = EncryptionService.EncryptUserId(user.Id);
                     var authenticationResponse = new AuthenticationResponse
                     {
-                        Token = GenerateJwtToken(encryptedUserId),
+                        Token = GenerateJwtToken(user.Id.ToString()),
                         Username = user.Username,
                         DisplayName = user.DisplayName,
                         FirstName = user.FirstName,
