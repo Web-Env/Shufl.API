@@ -27,7 +27,7 @@ jobs:
         files: './Shufl.API/appsettings.json'
       env:
         SmtpSettings.EmailSmtpPassword: ${{ secrets.SMTP_PASSWORD }}
-        EmailSettings.PrimaryRedirectUrl: ${{ secrets.PRIMARY_REDIRECT_URL }}
+        EmailSettings.PrimaryRedirectDomain: ${{ secrets.PRIMARY_REDIRECT_URL }}
     - name: Build
       run: dotnet build --no-restore
     - name: Test
