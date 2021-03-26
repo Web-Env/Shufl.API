@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Shufl.API.UploadModels;
+using Shufl.Domain.Entities;
+using Shufl.Domain.Repositories;
 using Shufl.Domain.Repositories.Interfaces;
 using System;
 
@@ -14,11 +16,11 @@ namespace Shufl.API.Controllers
         protected readonly ILogger Logger;
         private readonly IMapper _mapper;
 
-        public CustomControllerBase(IRepositoryManager repositoryManager,
+        public CustomControllerBase(ShuflContext shuflContext,
                                     ILogger<CustomControllerBase> logger,
                                     IMapper mapper)
         {
-            RepositoryManager = repositoryManager;
+            RepositoryManager = new RepositoryManager(shuflContext);
             Logger = logger;
             _mapper = mapper;
         }

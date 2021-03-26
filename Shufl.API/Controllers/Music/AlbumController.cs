@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models.Music;
-using Shufl.Domain.Repositories.Interfaces;
+using Shufl.Domain.Entities;
 using System;
 using System.Threading.Tasks;
 
@@ -16,10 +16,10 @@ namespace Shufl.API.Controllers.Music
     {
         private readonly SpotifyAPICredentials _spotifyAPICredentials;
 
-        public AlbumController(IRepositoryManager repositoryManager,
+        public AlbumController(ShuflContext shuflContext,
                                ILogger<AlbumController> logger,
                                IMapper mapper,
-                               IOptions<SpotifyAPICredentials> spotifyAPICredentials) : base(repositoryManager, logger, mapper)
+                               IOptions<SpotifyAPICredentials> spotifyAPICredentials) : base(shuflContext, logger, mapper)
         {
             _spotifyAPICredentials = spotifyAPICredentials.Value;
         }

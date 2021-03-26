@@ -3,10 +3,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Shufl.API.Infrastructure.Encryption;
 using Shufl.API.Infrastructure.Exceptions;
+using Shufl.API.Models.User;
 using Shufl.API.Services.Auth;
 using Shufl.API.UploadModels.Auth;
-using Shufl.Domain.Repositories.Interfaces;
+using Shufl.Domain.Entities;
+using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Shufl.API.Controllers.User
@@ -17,10 +21,10 @@ namespace Shufl.API.Controllers.User
     public class AuthController : CustomControllerBase
     {
         private readonly AuthenticationService _authenticationService;
-        public AuthController(IRepositoryManager repositoryManager,
+        public AuthController(ShuflContext dbContext,
                               IMapper mapper,
                               ILogger<AuthController> logger,
-                              AuthenticationService authenticationService) : base(repositoryManager, logger, mapper) 
+                              AuthenticationService authenticationService) : base(dbContext, logger, mapper) 
         {
             _authenticationService = authenticationService;
         }
@@ -39,12 +43,34 @@ namespace Shufl.API.Controllers.User
             {
                 return BadRequest(authException.ErrorMessage);
             }
+            catch (Exception err)
+            {
+                LogException(err);
+
+                return Problem();
+            }
         }
 
-        [HttpGet("validate")]
-        public IActionResult Validate()
+        [HttpGet("Validate")]
+        public async Task<IActionResult> Validate()
         {
-            return Ok();
+            try
+            {
+                var userId = DecryptionService.DecryptUserId(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+                if (await UserModel.CheckUserExistsByIdAsync(userId, RepositoryManager.UserRepository))
+                {
+                    return Ok();
+                }
+
+                return Unauthorized();
+            }
+            catch (Exception err)
+            {
+                LogException(err);
+
+                return Problem();
+            }
         }
     }
 }

@@ -50,6 +50,7 @@ namespace Shufl.API.Infrastructure.Emails
             var formattedHtmlString = FormatHtmlString(
                 htmlString,
                 linkEmailViewModel.FullName,
+                linkEmailViewModel.UrlDomain,
                 linkEmailViewModel.Link);
 
             var templateBaseHtmlString = FetchEmailTemplateString("TemplateBase");

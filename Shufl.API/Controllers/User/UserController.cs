@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shufl.API.Infrastructure.Exceptions;
+using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models.User;
 using Shufl.API.UploadModels.User;
-using Shufl.Domain.Repositories.Interfaces;
+using Shufl.Domain.Entities;
 using System;
 using System.Threading.Tasks;
 using WebEnv.Util.Mailer.Settings;
@@ -19,12 +20,15 @@ namespace Shufl.API.Controllers.User
     public class UserController : CustomControllerBase
     {
         private readonly SmtpSettings _smtpSettings;
-        public UserController(IRepositoryManager repositoryManager,
+        private readonly EmailSettings _emailSettings;
+        public UserController(ShuflContext shuflContext,
                               IMapper mapper,
                               IOptions<SmtpSettings> smtpSettings,
-                              ILogger<UserController> logger) : base(repositoryManager, logger, mapper)
+                              IOptions<EmailSettings> emailSettings,
+                              ILogger<UserController> logger) : base(shuflContext, logger, mapper)
         {
             _smtpSettings = smtpSettings.Value;
+            _emailSettings = emailSettings.Value;
         }
 
         [HttpGet("CheckUsernameUnique")]
@@ -45,7 +49,7 @@ namespace Shufl.API.Controllers.User
             {
                 LogException(err);
 
-                throw;
+                return Problem();
             }
         }
 
@@ -59,7 +63,8 @@ namespace Shufl.API.Controllers.User
                     newUser,
                     ExtractRequesterAddress(Request),
                     RepositoryManager,
-                    _smtpSettings
+                    _smtpSettings,
+                    _emailSettings
                     );
 
                 return Ok();
@@ -76,7 +81,7 @@ namespace Shufl.API.Controllers.User
             {
                 LogException(err);
 
-                throw;
+                return Problem();
             }
         }
 
@@ -100,7 +105,7 @@ namespace Shufl.API.Controllers.User
             {
                 LogException(err);
 
-                return BadRequest();
+                return Problem();
             }
         }
 
@@ -128,20 +133,21 @@ namespace Shufl.API.Controllers.User
             {
                 LogException(err);
 
-                return BadRequest();
+                return Problem();
             }
         }
 
         [HttpPost("Verify/New")]
-        public async Task<IActionResult> CreateNewVerification(string emailAddress)
+        public async Task<IActionResult> CreateNewVerification(string email)
         {
             try
             {
                 await UserModel.CreateNewVerficationAsync(
-                    emailAddress,
+                    email,
                     ExtractRequesterAddress(Request),
                     RepositoryManager,
-                    _smtpSettings);
+                    _smtpSettings,
+                    _emailSettings);
 
                 return Ok();
             }
@@ -153,18 +159,18 @@ namespace Shufl.API.Controllers.User
             {
                 LogException(err);
 
-                return BadRequest();
+                return Problem();
             }
         }
 
         [HttpPost("ForgotPassword")]
-        public async Task<IActionResult> ResetPassword(string resetIdentifier, string newPassword)
+        public async Task<IActionResult> ResetPassword(PasswordResetUploadModel passwordResetUploadModel)
         {
             try
             {
                 await UserModel.ResetPasswordAsync(
-                    resetIdentifier,
-                    newPassword,
+                    passwordResetUploadModel.PasswordResetToken,
+                    passwordResetUploadModel.NewPassword,
                     ExtractRequesterAddress(Request),
                     RepositoryManager);
 
@@ -178,20 +184,49 @@ namespace Shufl.API.Controllers.User
             {
                 LogException(err);
 
+                return Problem();
+            }
+        }
+
+        [HttpGet("ForgotPassword/Validate")]
+        public async Task<IActionResult> ValidatePasswordResetToken(string passwordResetToken)
+        {
+            try
+            {
+                var passwordResetTokenIsValid = await UserModel.ValidatePasswordResetTokenAsync(
+                    passwordResetToken,
+                    RepositoryManager.PasswordResetRepository);
+
+                if (passwordResetTokenIsValid)
+                {
+                    return Ok();
+                }
+
                 return BadRequest();
+            }
+            catch (InvalidTokenException err)
+            {
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorData));
+            }
+            catch (Exception err)
+            {
+                LogException(err);
+
+                return Problem();
             }
         }
 
         [HttpPost("ForgotPassword/New")]
-        public async Task<IActionResult> CreateNewResetPassword(string emailAddress)
+        public async Task<IActionResult> CreateNewResetPassword(PasswordResetRequestUploadModel passwordResetRequestUploadModel)
         {
             try
             {
                 await UserModel.CreateNewResetPasswordAsync(
-                    emailAddress,
+                    passwordResetRequestUploadModel.Email,
                     ExtractRequesterAddress(Request),
                     RepositoryManager,
-                    _smtpSettings);
+                    _smtpSettings,
+                    _emailSettings);
 
                 return Ok();
             }
@@ -199,7 +234,7 @@ namespace Shufl.API.Controllers.User
             {
                 LogException(err);
 
-                return BadRequest();
+                return Problem();
             }
         }
     }

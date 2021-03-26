@@ -4,6 +4,7 @@ using Shufl.API.Infrastructure.Encryption;
 using Shufl.API.Infrastructure.Encryption.Helpers;
 using Shufl.API.Infrastructure.Enums;
 using Shufl.API.Infrastructure.Exceptions;
+using Shufl.API.Infrastructure.Settings;
 using Shufl.Domain.Entities;
 using Shufl.Domain.Repositories.Interfaces;
 using Shufl.Domain.Repositories.User.Interfaces;
@@ -17,6 +18,12 @@ namespace Shufl.API.Models.User
 {
     public static class UserModel
     {
+        public static async Task<bool> CheckUserExistsByIdAsync(Guid userId, IUserRepository userRepository)
+        {
+            var user = await userRepository.GetByIdAsync(userId);
+            return user != null;
+        }
+
         public static async Task<bool> CheckUsernameUniqueAsync(string username, IUserRepository userRepository)
         {
             var userWithUsername = await userRepository.FindByUsernameAsync(username);
@@ -27,7 +34,8 @@ namespace Shufl.API.Models.User
             Domain.Entities.User user,
             string requesterAddress,
             IRepositoryManager repositoryManager,
-            SmtpSettings smtpSettings)
+            SmtpSettings smtpSettings,
+            EmailSettings emailSettings)
         {
             var (emailExists, _) = await CheckUserExistsWithEmailAsync(user.Email, repositoryManager.UserRepository)
                 .ConfigureAwait(false);
@@ -62,6 +70,7 @@ namespace Shufl.API.Models.User
                     requesterAddress,
                     repositoryManager,
                     smtpSettings,
+                    emailSettings,
                     isFirstContact: true).ConfigureAwait(false);
 
             }
@@ -166,6 +175,7 @@ namespace Shufl.API.Models.User
             string requesterAddress,
             IRepositoryManager repositoryManager,
             SmtpSettings smtpSettings,
+            EmailSettings emailSettings,
             bool isFirstContact = false
             )
         {
@@ -201,6 +211,7 @@ namespace Shufl.API.Models.User
                     var verificationViewModel = new LinkEmailViewModel
                     {
                         FullName = $"{user.FirstName} {user.LastName}",
+                        UrlDomain = emailSettings.PrimaryRedirectDomain,
                         Link = verificationIdentifier
                     };
 
@@ -241,14 +252,28 @@ namespace Shufl.API.Models.User
             }
         }
 
+        public static async Task<bool> ValidatePasswordResetTokenAsync(
+            string passwordResetToken,
+            IPasswordResetRepository passwordResetRepository)
+        {
+            var decryptedResetToken = DecryptionService.DecryptString(passwordResetToken);
+            var hashedResetIdentifier = HashingHelper.HashIdentifier(decryptedResetToken);
+            var (existsAndValid, _) = await CheckPasswordResetIdentifierExistsAndIsValidAsync(
+                hashedResetIdentifier,
+                passwordResetRepository).ConfigureAwait(false);
+
+            return existsAndValid;
+        }
+
+
         public static async Task ResetPasswordAsync(
-            string resetIdentifier,
+            string passwordResetToken,
             string newPassword,
             string requesterAddress,
             IRepositoryManager repositoryManager)
         {
-            var decryptedResetIdentifier = DecryptionService.DecryptString(resetIdentifier);
-            var hashedResetIdentifier = HashingHelper.HashIdentifier(decryptedResetIdentifier);
+            var decryptedResetToken = DecryptionService.DecryptString(passwordResetToken);
+            var hashedResetIdentifier = HashingHelper.HashIdentifier(decryptedResetToken);
             var (existsAndValid, passwordReset) = await CheckPasswordResetIdentifierExistsAndIsValidAsync(
                 hashedResetIdentifier,
                 repositoryManager.PasswordResetRepository).ConfigureAwait(false);
@@ -317,7 +342,8 @@ namespace Shufl.API.Models.User
             string email,
             string requesterAddress,
             IRepositoryManager repositoryManager,
-            SmtpSettings smtpSettings)
+            SmtpSettings smtpSettings,
+            EmailSettings emailSettings)
         {
             var (exists, user) = await CheckUserExistsWithEmailAsync(email, repositoryManager.UserRepository)
                 .ConfigureAwait(false);
@@ -331,6 +357,7 @@ namespace Shufl.API.Models.User
                     var hashedResetIdentifier = HashingHelper.HashIdentifier(resetIdentifier);
                     var encryptedUserId = EncryptionService.EncryptString(user.Id.ToString());
                     var encryptedIdentifier = EncryptionService.EncryptString(resetIdentifier);
+                    var encodedEncryptedIdentifier = System.Web.HttpUtility.UrlEncode(encryptedIdentifier);
 
                     var passwordReset = new PasswordReset
                     {
@@ -342,7 +369,8 @@ namespace Shufl.API.Models.User
                     var verificationViewModel = new LinkEmailViewModel
                     {
                         FullName = $"{user.FirstName} {user.LastName}",
-                        Link = encryptedIdentifier
+                        UrlDomain = emailSettings.PrimaryRedirectDomain,
+                        Link = encodedEncryptedIdentifier
                     };
 
                     await repositoryManager.PasswordResetRepository.AddAsync(passwordReset);
