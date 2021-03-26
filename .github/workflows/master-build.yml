@@ -27,7 +27,7 @@ jobs:
         files: './Shufl.API/appsettings.json'
       env:
         SmtpSettings.EmailSmtpPassword: ${{ secrets.SMTP_PASSWORD }}
-        EmailSettings.PrimaryRedirectUrl: ${{ secrets.PRIMARY_REDIRECT_URL }}
+        EmailSettings.PrimaryRedirectDomain: ${{ secrets.PRIMARY_REDIRECT_URL }}
         ConnectionStrings.ShuflDb: ${{ secrets.PRODUCTION_CONNECTION_STRING }}
         SpotifyAPICredentials.ClientId: ${{ secrets.SPOTIFY_API_CLIENT_ID }}
         SpotifyAPICredentials.ClientSecret: ${{ secrets.SPOTIFY_API_CLIENT_SECRET }}
