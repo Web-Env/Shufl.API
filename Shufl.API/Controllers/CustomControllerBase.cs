@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Shufl.API.Models.User;
@@ -8,6 +7,7 @@ using Shufl.Domain.Entities;
 using Shufl.Domain.Repositories;
 using Shufl.Domain.Repositories.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -31,6 +31,11 @@ namespace Shufl.API.Controllers
         protected TDownloadModel MapEntityToDownloadModel<TEntity, TDownloadModel>(TEntity entity)
         {
             return _mapper.Map<TDownloadModel>(entity);
+        }
+
+        protected List<TDownloadModel> MapEntitiesToDownloadModels<TEntity, TDownloadModel>(IEnumerable<TEntity> entity)
+        {
+            return _mapper.Map<IEnumerable<TEntity>, List<TDownloadModel>>(entity);
         }
 
         protected TEntity MapUploadModelToEntity<TEntity>(IUploadModel uploadModel)

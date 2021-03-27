@@ -5,9 +5,9 @@ using Shufl.Domain.Entities;
 
 namespace Shufl.API.Infrastructure.Mappers
 {
-    public class UploadModelToEntity : Profile
+    public class UploadModelToEntityProfile : Profile
     {
-        public UploadModelToEntity()
+        public UploadModelToEntityProfile()
         {
             CreateMap<UserUploadModel, User>()
                 .ForMember(dest => dest.Username, src => src.ConvertUsing(new LowerCaseConverter()));
