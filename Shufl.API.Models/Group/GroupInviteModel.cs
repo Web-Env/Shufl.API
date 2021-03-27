@@ -16,6 +16,8 @@ namespace Shufl.API.Models.Group
             Guid userId,
             IRepositoryManager repositoryManager)
         {
+            groupIdentifier = groupIdentifier.ToUpper();
+
             try
             {
                 var group = await repositoryManager.GroupRepository.GetByIdentifierAsync(groupIdentifier);
@@ -106,6 +108,7 @@ namespace Shufl.API.Models.Group
             Guid userId,
             IRepositoryManager repositoryManager)
         {
+            groupInviteIdentifier = groupInviteIdentifier.ToUpper();
             try
             {
                 var invite = await repositoryManager.GroupInviteRepository.GetByIdentifierAsync(groupInviteIdentifier);

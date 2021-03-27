@@ -38,6 +38,8 @@ namespace Shufl.API.Models.Group
             Guid userId,
             IRepositoryManager repositoryManager)
         {
+            groupIdentifier = groupIdentifier.ToUpper();
+
             try
             {
                 var userIsMemberOfGroup = await CheckUserIsMemberOfGroupAsync(groupIdentifier, userId, repositoryManager);
