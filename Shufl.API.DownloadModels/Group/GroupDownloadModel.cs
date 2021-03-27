@@ -9,6 +9,8 @@ namespace Shufl.API.DownloadModels.Group
 
         public string Identifier { get; set; }
 
+        public bool IsPrivate { get; set; }
+
         public UserDownloadModel CreatedBy { get; set; }
 
         public List<GroupMemberDownloadModel> Members { get; set; }
