@@ -32,25 +32,37 @@ namespace Shufl.API.Models.Group
 
                     if (isUserMemberOfGroup)
                     {
-                        var newGroupInviteIdentifier = await GenerateNewGroupInviteIdentifierAsync(
+                        var existingGroupInviteIdentifierByUser = (await repositoryManager.GroupInviteRepository.FindAsync(gi =>
+                            gi.GroupId == group.Id &&
+                            gi.CreatedBy == userId &&
+                            gi.ExpiryDate > DateTime.Now)).FirstOrDefault();
+
+                        if (existingGroupInviteIdentifierByUser == null)
+                        {
+                            var newGroupInviteIdentifier = await GenerateNewGroupInviteIdentifierAsync(
                             group.Id,
                             repositoryManager.GroupInviteRepository);
-                        var newGroupInviteExpiryDate = DateTime.Now.AddDays(IdentifierConsts.GroupInviteIdentifierExpiryOffsetDays);
+                            var newGroupInviteExpiryDate = DateTime.Now.AddDays(IdentifierConsts.GroupInviteIdentifierExpiryOffsetDays);
 
-                        var newGroupInvite = new GroupInvite
+                            var newGroupInvite = new GroupInvite
+                            {
+                                GroupId = group.Id,
+                                Identifier = newGroupInviteIdentifier,
+                                ExpiryDate = newGroupInviteExpiryDate,
+                                CreatedOn = DateTime.Now,
+                                CreatedBy = userId,
+                                LastUpdatedOn = DateTime.Now,
+                                LastUpdatedBy = userId
+                            };
+
+                            await repositoryManager.GroupInviteRepository.AddAsync(newGroupInvite);
+
+                            return newGroupInviteIdentifier;
+                        }
+                        else
                         {
-                            GroupId = group.Id,
-                            Identifier = newGroupInviteIdentifier,
-                            ExpiryDate = newGroupInviteExpiryDate,
-                            CreatedOn = DateTime.Now,
-                            CreatedBy = userId,
-                            LastUpdatedOn = DateTime.Now,
-                            LastUpdatedBy = userId
-                        };
-
-                        await repositoryManager.GroupInviteRepository.AddAsync(newGroupInvite);
-
-                        return newGroupInviteIdentifier;
+                            return existingGroupInviteIdentifierByUser.Identifier;
+                        }
                     }
                     else
                     {
