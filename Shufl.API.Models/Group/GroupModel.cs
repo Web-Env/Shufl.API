@@ -155,7 +155,8 @@ namespace Shufl.API.Models.Group
             IGroupMemberRepository groupMemberRepository)
         {
             var groupMember = await groupMemberRepository.FindAsync(gm => 
-                gm.GroupId == groupId && gm.UserId == userId);
+                gm.GroupId == groupId &&
+                gm.UserId == userId);
 
             return groupMember != null;
         }
