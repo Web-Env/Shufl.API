@@ -69,12 +69,12 @@ namespace Shufl.API.Controllers.Group
                         return BadRequest();
                     }
 
-                    var groupIdentifier = await GroupInviteModel.JoinGroupByInviteAsync(
+                    var group = await GroupInviteModel.JoinGroupByInviteAsync(
                         groupInviteIdentifier,
                         ExtractUserIdFromToken(),
                         RepositoryManager);
 
-                    return Ok(groupIdentifier);
+                    return Ok(MapEntityToDownloadModel<Domain.Entities.Group, GroupDownloadModel>(group));
                 }
                 else
                 {
@@ -111,7 +111,7 @@ namespace Shufl.API.Controllers.Group
 
                     if (groupAssociatedWithInvite != null)
                     {
-                        return MapEntityToDownloadModel<Domain.Entities.Group, GroupDownloadModel>(groupAssociatedWithInvite);
+                        return Ok(MapEntityToDownloadModel<Domain.Entities.Group, GroupDownloadModel>(groupAssociatedWithInvite));
                     }
                     else
                     {

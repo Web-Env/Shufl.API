@@ -100,7 +100,7 @@ namespace Shufl.API.Models.Group
             return groupInvite != null;
         }
 
-        public static async Task<string> JoinGroupByInviteAsync(
+        public static async Task<Domain.Entities.Group> JoinGroupByInviteAsync(
             string groupInviteIdentifier,
             Guid userId,
             IRepositoryManager repositoryManager)
@@ -136,7 +136,7 @@ namespace Shufl.API.Models.Group
 
                             var group = await repositoryManager.GroupRepository.GetByIdAsync(invite.GroupId);
 
-                            return group.Identifier;
+                            return group;
                         }
                         else
                         {
