@@ -61,8 +61,7 @@ namespace Shufl.API
             services.Configure<EmailSettings>(emailSettings);
             services.Configure<SpotifyAPICredentials>(spotifyAPICredentialsSection);
             services.Configure<AzureFileLoggerOptions>(Configuration.GetSection("AzureLogging"));
-            services.AddAutoMapper(typeof(UploadModelToEntity));
-            services.AddAutoMapper(typeof(EntityToDownloadModel));
+            services.AddCustomMappers();
 
             services.AddSwaggerGen(c =>
             {

@@ -61,7 +61,7 @@ namespace Shufl.API.Controllers.User
                 var newUser = MapUploadModelToEntity<Domain.Entities.User>(user);
                 await UserModel.CreateNewUserAsync(
                     newUser,
-                    ExtractRequesterAddress(Request),
+                    ExtractRequesterAddress(),
                     RepositoryManager,
                     _smtpSettings,
                     _emailSettings
@@ -92,14 +92,14 @@ namespace Shufl.API.Controllers.User
             {
                 await UserModel.VerifyUserAsync(
                     verificationIdentifier,
-                    ExtractRequesterAddress(Request),
+                    ExtractRequesterAddress(),
                     RepositoryManager);
 
                 return Ok();
             }
             catch (InvalidTokenException err)
             {
-                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorData));
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
             }
             catch (Exception err)
             {
@@ -127,7 +127,7 @@ namespace Shufl.API.Controllers.User
             }
             catch (InvalidTokenException err)
             {
-                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorData));
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
             }
             catch (Exception err)
             {
@@ -144,7 +144,7 @@ namespace Shufl.API.Controllers.User
             {
                 await UserModel.CreateNewVerficationAsync(
                     email,
-                    ExtractRequesterAddress(Request),
+                    ExtractRequesterAddress(),
                     RepositoryManager,
                     _smtpSettings,
                     _emailSettings);
@@ -171,14 +171,14 @@ namespace Shufl.API.Controllers.User
                 await UserModel.ResetPasswordAsync(
                     passwordResetUploadModel.PasswordResetToken,
                     passwordResetUploadModel.NewPassword,
-                    ExtractRequesterAddress(Request),
+                    ExtractRequesterAddress(),
                     RepositoryManager);
 
                 return Ok();
             }
             catch (InvalidTokenException err)
             {
-                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorData));
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
             }
             catch (Exception err)
             {
@@ -206,7 +206,7 @@ namespace Shufl.API.Controllers.User
             }
             catch (InvalidTokenException err)
             {
-                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorData));
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
             }
             catch (Exception err)
             {
@@ -223,7 +223,7 @@ namespace Shufl.API.Controllers.User
             {
                 await UserModel.CreateNewResetPasswordAsync(
                     passwordResetRequestUploadModel.Email,
-                    ExtractRequesterAddress(Request),
+                    ExtractRequesterAddress(),
                     RepositoryManager,
                     _smtpSettings,
                     _emailSettings);
