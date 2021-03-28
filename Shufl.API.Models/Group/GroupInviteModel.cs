@@ -40,8 +40,8 @@ namespace Shufl.API.Models.Group
                         if (existingGroupInviteIdentifierByUser == null)
                         {
                             var newGroupInviteIdentifier = await GenerateNewGroupInviteIdentifierAsync(
-                            group.Id,
-                            repositoryManager.GroupInviteRepository);
+                                group.Id,
+                                repositoryManager.GroupInviteRepository);
                             var newGroupInviteExpiryDate = DateTime.Now.AddDays(IdentifierConsts.GroupInviteIdentifierExpiryOffsetDays);
 
                             var newGroupInvite = new GroupInvite
