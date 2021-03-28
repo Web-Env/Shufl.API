@@ -99,7 +99,7 @@ namespace Shufl.API.Controllers.User
             }
             catch (InvalidTokenException err)
             {
-                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorData));
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
             }
             catch (Exception err)
             {
@@ -127,7 +127,7 @@ namespace Shufl.API.Controllers.User
             }
             catch (InvalidTokenException err)
             {
-                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorData));
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
             }
             catch (Exception err)
             {
@@ -178,7 +178,7 @@ namespace Shufl.API.Controllers.User
             }
             catch (InvalidTokenException err)
             {
-                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorData));
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
             }
             catch (Exception err)
             {
@@ -206,7 +206,7 @@ namespace Shufl.API.Controllers.User
             }
             catch (InvalidTokenException err)
             {
-                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorData));
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
             }
             catch (Exception err)
             {

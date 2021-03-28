@@ -5,6 +5,7 @@ using Shufl.Domain.Entities;
 using Shufl.Domain.Repositories.Group.Interfaces;
 using Shufl.Domain.Repositories.Interfaces;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Shufl.API.Models.Group
@@ -60,7 +61,7 @@ namespace Shufl.API.Models.Group
                 }
                 else
                 {
-                    throw new InvalidTokenException(InvalidTokenType.NoTokenFound, "The requested group was not found");
+                    throw new InvalidTokenException(InvalidTokenType.TokenNotFound, "The requested Group was not found");
                 }
             }
             catch (Exception)
@@ -73,10 +74,9 @@ namespace Shufl.API.Models.Group
             Guid groupId,
             IGroupInviteRepository groupRepository)
         {
-            var newGroupIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.GroupIdentifierLength);
-            var groupInviteExistsForGroupWithIdentifier = await CheckGroupInviteExistsForGroupByIdentifierAsync(
-                groupId,
-                newGroupIdentifier,
+            var newGroupInviteIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.GroupIdentifierLength);
+            var groupInviteExistsForGroupWithIdentifier = await CheckGroupInviteExistsByIdentifierAsync(
+                newGroupInviteIdentifier,
                 groupRepository);
 
             if (groupInviteExistsForGroupWithIdentifier)
@@ -87,18 +87,15 @@ namespace Shufl.API.Models.Group
             }
             else
             {
-                return newGroupIdentifier;
+                return newGroupInviteIdentifier;
             }
         }
 
-        private static async Task<bool> CheckGroupInviteExistsForGroupByIdentifierAsync(
-            Guid groupId,
+        private static async Task<bool> CheckGroupInviteExistsByIdentifierAsync(
             string groupInviteIdentifier,
             IGroupInviteRepository groupInviteRepository)
         {
-            var groupInvite = await groupInviteRepository.FindAsync(gi => 
-                gi.GroupId == groupId &&
-                gi.Identifier == groupInviteIdentifier);
+            var groupInvite = await groupInviteRepository.GetByIdentifierAsync(groupInviteIdentifier);
 
             return groupInvite != null;
         }
@@ -112,43 +109,50 @@ namespace Shufl.API.Models.Group
             try
             {
                 var invite = await repositoryManager.GroupInviteRepository.GetByIdentifierAsync(groupInviteIdentifier);
-                var inviteIsValid = ValidateInvite(invite);
-
-                if (inviteIsValid)
+                if (invite != null)
                 {
-                    var existingGroupMember = await repositoryManager.GroupMemberRepository.FindAsync(gm =>
-                        gm.GroupId == invite.GroupId &&
-                        gm.UserId == userId);
+                    var inviteIsValid = ValidateGroupInvite(invite);
 
-                    if (existingGroupMember == null)
+                    if (inviteIsValid)
                     {
-                        var newGroupMember = new GroupMember
+                        var existingGroupMember = await repositoryManager.GroupMemberRepository.GetByUserIdAndGroupIdAsync(
+                            userId,
+                            invite.GroupId);
+
+                        if (existingGroupMember == null)
                         {
-                            GroupId = invite.GroupId,
-                            UserId = userId,
-                            GroupInviteId = invite.Id,
-                            CreatedOn = DateTime.Now,
-                            CreatedBy = userId,
-                            LastUpdatedOn = DateTime.Now,
-                            LastUpdatedBy = userId
-                        };
+                            var newGroupMember = new GroupMember
+                            {
+                                GroupId = invite.GroupId,
+                                UserId = userId,
+                                GroupInviteId = invite.Id,
+                                CreatedOn = DateTime.Now,
+                                CreatedBy = userId,
+                                LastUpdatedOn = DateTime.Now,
+                                LastUpdatedBy = userId
+                            };
 
-                        await repositoryManager.GroupMemberRepository.AddAsync(newGroupMember);
+                            await repositoryManager.GroupMemberRepository.AddAsync(newGroupMember);
 
-                        var group = await repositoryManager.GroupRepository.GetByIdAsync(invite.GroupId);
+                            var group = await repositoryManager.GroupRepository.GetByIdAsync(invite.GroupId);
 
-                        return group.Identifier;
+                            return group.Identifier;
+                        }
+                        else
+                        {
+                            throw new UserAlreadyGroupMemberException(
+                                "You are already a member of this group",
+                                "You are already a member of this group");
+                        }
                     }
                     else
                     {
-                        throw new UserAlreadyGroupMemberException(
-                            "You are already a member of this group",
-                            "You are already a member of this group");
+                        throw new InvalidTokenException(InvalidTokenType.TokenExpired, "This Group Invite has expired");
                     }
                 }
                 else
                 {
-                    throw new InvalidTokenException(InvalidTokenType.TokenExpired, "Invite link has expired");
+                    throw new InvalidTokenException(InvalidTokenType.TokenNotFound, "This Group Invite is invalid");
                 }
             }
             catch (Exception)
@@ -157,7 +161,61 @@ namespace Shufl.API.Models.Group
             }
         }
 
-        private static bool ValidateInvite(GroupInvite groupInvite)
+        public static async Task<Domain.Entities.Group> CheckUserGroupInviteValidAsync(
+            string groupInviteIdentifier,
+            Guid userId,
+            IRepositoryManager repositoryManager)
+        {
+            groupInviteIdentifier = groupInviteIdentifier.ToUpper();
+
+            try
+            {
+                var groupInviteExists = await CheckGroupInviteExistsByIdentifierAsync(
+                    groupInviteIdentifier,
+                    repositoryManager.GroupInviteRepository);
+
+                if (groupInviteExists)
+                {
+                    var groupInvite = await repositoryManager.GroupInviteRepository.GetByIdentifierAsync(groupInviteIdentifier);
+                    var groupInviteIsValid = ValidateGroupInvite(groupInvite);
+
+                    if (groupInviteIsValid)
+                    {
+                        var userIsMemberOfGroup = await GroupMemberModel.CheckGroupMemberExistsAsync(
+                            groupInvite.GroupId,
+                            userId,
+                            repositoryManager.GroupMemberRepository);
+
+                        if (!userIsMemberOfGroup)
+                        {
+                            var group = await repositoryManager.GroupRepository.GetByIdForDownloadAsync(groupInvite.GroupId);
+
+                            return group;
+                        }
+                        else
+                        {
+                            throw new UserAlreadyGroupMemberException(
+                                "You are already a member of this group",
+                                "You are already a member of this group");
+                        }
+                    }
+                    else
+                    {
+                        throw new InvalidTokenException(InvalidTokenType.TokenExpired, "This Group Invite has expired");
+                    }
+                }
+                else
+                {
+                    throw new InvalidTokenException(InvalidTokenType.TokenNotFound, "This Group Invite is invalid");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public static bool ValidateGroupInvite(GroupInvite groupInvite)
         {
             if (groupInvite.ExpiryDate < DateTime.Now)
             {

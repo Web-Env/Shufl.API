@@ -17,9 +17,16 @@ namespace Shufl.API.Models.Music
         {
             var randomArtist = await ArtistModel.FetchRandomArtistAsync(spotifyAPICredentials, genre);
             var randomArtistAlbums = await FetchArtistAlbumsAsync(randomArtist.Id, spotifyAPICredentials).ConfigureAwait(false);
-            randomArtistAlbums.Shuffle();
-            var randomAlbum = GetRandomAlbum(randomArtistAlbums);
-            return await FetchAlbumAsync(randomAlbum.Id, spotifyAPICredentials).ConfigureAwait(false);
+            if (randomArtistAlbums.Count > 0)
+            {
+                randomArtistAlbums.Shuffle();
+                var randomAlbum = GetRandomAlbum(randomArtistAlbums);
+                return await FetchAlbumAsync(randomAlbum.Id, spotifyAPICredentials).ConfigureAwait(false);
+            }
+            else
+            {
+                return await FetchRandomAlbumAsync(spotifyAPICredentials, genre);
+            }
         }
 
         public static async Task<List<SimpleAlbum>> FetchArtistAlbumsAsync(string artistId, SpotifyAPICredentials spotifyAPICredentials)

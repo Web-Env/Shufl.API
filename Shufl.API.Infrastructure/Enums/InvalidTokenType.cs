@@ -2,7 +2,7 @@
 {
     public enum InvalidTokenType
     {
-        NoTokenFound,
+        TokenNotFound,
         TokenExpired,
         TokenUsed,
         TokenInactive

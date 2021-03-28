@@ -132,7 +132,7 @@ namespace Shufl.API.Models.User
             }
             else
             {
-                throw new InvalidTokenException(InvalidTokenType.NoTokenFound, "The User Verification Identifier is invalid");
+                throw new InvalidTokenException(InvalidTokenType.TokenNotFound, "The User Verification Identifier is invalid");
             }
         }
 
@@ -297,7 +297,7 @@ namespace Shufl.API.Models.User
             }
             else
             {
-                throw new InvalidTokenException(InvalidTokenType.NoTokenFound, "The Password Reset Token is invalid");
+                throw new InvalidTokenException(InvalidTokenType.TokenNotFound, "The Password Reset Token is invalid");
             }
         }
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Shufl.API.DownloadModels.Group;
 using Shufl.API.Infrastructure.Exceptions;
 using Shufl.API.Models.Group;
 using Shufl.Domain.Entities;
@@ -42,7 +43,7 @@ namespace Shufl.API.Controllers.Group
             }
             catch (InvalidTokenException err)
             {
-                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorData));
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
             }
             catch (UserNotGroupMemberException)
             {
@@ -82,11 +83,54 @@ namespace Shufl.API.Controllers.Group
             }
             catch (InvalidTokenException err)
             {
-                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorData));
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
             }
             catch (UserAlreadyGroupMemberException err)
             {
-                return BadRequest(new UserAlreadyGroupMemberException(err.Message, err.ErrorData));
+                return BadRequest(new UserAlreadyGroupMemberException(err.ErrorMessage, err.ErrorData));
+            }
+            catch (Exception err)
+            {
+                LogException(err);
+
+                return Problem();
+            }
+        }
+
+        [HttpGet("Validate")]
+        public async Task<ActionResult<GroupDownloadModel>> ValidateGroupInviteAsync(string groupInviteIdentifier)
+        {
+            try
+            {
+                if (await IsUserValidAsync())
+                {
+                    var groupAssociatedWithInvite = await GroupInviteModel.CheckUserGroupInviteValidAsync(
+                        groupInviteIdentifier,
+                        ExtractUserIdFromToken(),
+                        RepositoryManager);
+
+                    if (groupAssociatedWithInvite != null)
+                    {
+                        return MapEntityToDownloadModel<Domain.Entities.Group, GroupDownloadModel>(groupAssociatedWithInvite);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                    
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (InvalidTokenException err)
+            {
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
+            }
+            catch (UserAlreadyGroupMemberException err)
+            {
+                return BadRequest(new UserAlreadyGroupMemberException(err.ErrorMessage, err.ErrorData));
             }
             catch (Exception err)
             {

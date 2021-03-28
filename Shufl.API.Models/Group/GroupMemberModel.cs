@@ -1,9 +1,7 @@
 ﻿using Shufl.Domain.Repositories.Group.Interfaces;
 using Shufl.Domain.Repositories.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Shufl.API.Models.Group
@@ -22,16 +20,16 @@ namespace Shufl.API.Models.Group
                 group.Id,
                 userId,
                 repositoryManager.GroupMemberRepository);
-        } 
+        }
 
         public static async Task<bool> CheckGroupMemberExistsAsync(
             Guid groupId,
             Guid userId,
             IGroupMemberRepository groupMemberRepository)
         {
-            var groupMember = await groupMemberRepository.FindAsync(gm =>
+            var groupMember = (await groupMemberRepository.FindAsync(gm =>
                 gm.GroupId == groupId &&
-                gm.UserId == userId);
+                gm.UserId == userId)).FirstOrDefault();
 
             return groupMember != null;
         }
