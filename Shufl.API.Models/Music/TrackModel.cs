@@ -1,7 +1,11 @@
-﻿using Shufl.API.DownloadModels.Album;
+﻿using AutoMapper;
+using Shufl.API.DownloadModels.Album;
 using Shufl.API.Infrastructure.Settings;
-using Shufl.API.Models.Helpers;
+using Shufl.API.Models.Music.Helpers;
+using Shufl.Domain.Entities;
+using Shufl.Domain.Repositories.Interfaces;
 using SpotifyAPI.Web;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,6 +31,100 @@ namespace Shufl.API.Models.Music
             album.Album.Tracks.Items = GetTrack(album.Album.Tracks.Items, trackId);
 
             return album;
+        }
+
+        public static async Task<List<Track>> IndexNewAlbumTracksAsync(
+            Guid albumId,
+            FullAlbum album,
+            IEnumerable<Artist> albumArtists,
+            IRepositoryManager repositoryManager,
+            IMapper mapper,
+            SpotifyAPICredentials spotifyAPICredentials)
+        {
+            List<Track> newAlbumTracks = new List<Track>();
+            HashSet<string> albumArtistsSpotifyIds = albumArtists.Select(a => a.SpotifyId).ToHashSet();
+
+            foreach (var track in album.Tracks.Items)
+            {
+                var newTrack = new Track
+                {
+                    SpotifyId = track.Id,
+                    AlbumId = albumId,
+                    Name = track.Name,
+                    TrackNumber = (short)track.TrackNumber,
+                    DiscNumber = (byte)track.DiscNumber,
+                    Duration = track.DurationMs
+                };
+
+                newTrack.TrackArtists = await MapTrackArtistsAsync(
+                    track,
+                    albumArtistsSpotifyIds,
+                    albumArtists,
+                    repositoryManager,
+                    mapper,
+                    spotifyAPICredentials);
+            }
+
+            return newAlbumTracks;
+        }
+
+        private static async Task<List<TrackArtist>> MapTrackArtistsAsync(
+            SimpleTrack track,
+            HashSet<string> albumArtistsSpotifyIds,
+            IEnumerable<Artist> albumArtists,
+            IRepositoryManager repositoryManager,
+            IMapper mapper,
+            SpotifyAPICredentials spotifyAPICredentials)
+        {
+            List<TrackArtist> trackArtists = new List<TrackArtist>();
+            List<string> trackArtistsToBeCreated = new List<string>();
+            var trackArtistSpotifyIds = track.Artists.Select(a => a.Id).ToHashSet();
+
+            foreach (var trackArtist in track.Artists)
+            {
+                if (albumArtistsSpotifyIds.Contains(trackArtist.Id))
+                {
+                    var albumArtist = albumArtists.Where(a => a.SpotifyId == trackArtist.Id).FirstOrDefault();
+
+                    trackArtists.Add(new TrackArtist
+                    {
+                        ArtistId = albumArtist.Id,
+                        CreatedOn = DateTime.Now,
+                        LastUpdatedOn = DateTime.Now
+                    });
+                }
+                else
+                {
+                    trackArtistsToBeCreated.Add(trackArtist.Id);
+                }
+            }
+
+            if(trackArtistsToBeCreated.Count > 0)
+            {
+                var newArtists = await ArtistModel.FetchArtistsAsync(trackArtistsToBeCreated, spotifyAPICredentials);
+                var artists = await ArtistModel.CreateOrFetchArtistAsync(newArtists, repositoryManager, mapper);
+
+                trackArtists.AddRange(MapArtistsToTrackArtists(artists.Select(a => a.Id).ToList()));
+            }
+
+            return trackArtists;
+        }
+
+        private static List<TrackArtist> MapArtistsToTrackArtists(IEnumerable<Guid> artistIds)
+        {
+            List<TrackArtist> trackArtists = new List<TrackArtist>();
+
+            foreach (var artistId in artistIds)
+            {
+                trackArtists.Add(new TrackArtist
+                {
+                    ArtistId = artistId,
+                    CreatedOn = DateTime.Now,
+                    LastUpdatedOn = DateTime.Now
+                });
+            }
+
+            return trackArtists;
         }
 
         private static List<SimpleTrack> GetRandomTrack(List<SimpleTrack> randomTracks)

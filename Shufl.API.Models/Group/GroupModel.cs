@@ -16,8 +16,8 @@ namespace Shufl.API.Models.Group
     public static class GroupModel
     {
         public static async Task<List<Domain.Entities.Group>> GetAllUsersGroupsAsync(
-        Guid userId,
-        IRepositoryManager repositoryManager)
+            Guid userId,
+            IRepositoryManager repositoryManager)
         {
             try
             {

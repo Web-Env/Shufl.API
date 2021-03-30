@@ -12,6 +12,7 @@ namespace Shufl.API.Infrastructure.Extensions
             {
                 cfg.AddProfile(new EntityToDownloadModelProfile());
                 cfg.AddProfile(new UploadModelToEntityProfile());
+                cfg.AddProfile(new SpotifyApiModelToEntityProfile());
             });
 
             var mapper = mappersConfig.CreateMapper();

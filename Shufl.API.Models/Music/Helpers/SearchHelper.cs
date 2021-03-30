@@ -4,7 +4,7 @@ using SpotifyAPI.Web;
 using System;
 using System.Threading.Tasks;
 
-namespace Shufl.API.Models.Helpers
+namespace Shufl.API.Models.Music.Helpers
 {
     public static class SearchHelper
     {
