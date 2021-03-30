@@ -1,7 +1,20 @@
-﻿namespace Shufl.API.DownloadModels.Music
+﻿using System;
+using System.Collections.Generic;
+
+namespace Shufl.API.DownloadModels.Music
 {
     public class AlbumDownloadModel
     {
-        public ArtistDownloadModel Artist { get; set; }
+        public string Id { get; set; }
+
+        public string Name { get; set; }
+
+        public DateTime ReleaseDate { get; set; }
+
+        public IEnumerable<ImageDownloadModel> AlbumImages { get; set; }
+
+        public IEnumerable<ArtistDownloadModel> Artists { get; set; }
+
+        public IEnumerable<TrackDownloadModel> Tracks { get; set; }
     }
 }

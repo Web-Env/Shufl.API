@@ -10,6 +10,7 @@ using Shufl.Domain.Repositories.Interfaces;
 using SpotifyAPI.Web;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -131,30 +132,51 @@ namespace Shufl.API.Models.Music
                 {
                     SpotifyId = spotifyAlbumDownloadModel.Album.Id,
                     Name = spotifyAlbumDownloadModel.Album.Name,
-                    ReleaseDate = DateTime.Parse(spotifyAlbumDownloadModel.Album.ReleaseDate),
+                    ReleaseDate = ParseReleaseDateToDateTime(spotifyAlbumDownloadModel.Album.ReleaseDate, spotifyAlbumDownloadModel.Album.ReleaseDatePrecision),
                     Type = (byte)MapAlbumTypeToEnum(spotifyAlbumDownloadModel.Album.Type),
                     CreatedOn = DateTime.Now,
                     LastUpdatedOn = DateTime.Now
                 };
 
                 newAlbum.AlbumArtists = MapArtistsToAlbumArtists(albumArtists);
+                newAlbum.AlbumImages = mapper.Map<List<AlbumImage>>(spotifyAlbumDownloadModel.Album.Images);
                 await repositoryManager.AlbumRepository.AddAsync(newAlbum);
 
-                var newAlbumTracks = await TrackModel.IndexNewAlbumTracksAsync(
-                    newAlbum.Id,
-                    spotifyAlbumDownloadModel.Album,
-                    artists,
-                    repositoryManager,
-                    mapper,
-                    spotifyAPICredentials);
+                //var newAlbumTracks = await TrackModel.IndexNewAlbumTracksAsync(
+                //    newAlbum.Id,
+                //    spotifyAlbumDownloadModel.Album,
+                //    artists,
+                //    repositoryManager,
+                //    mapper,
+                //    spotifyAPICredentials);
 
-                await repositoryManager.TrackRepository.AddRangeAsync(newAlbumTracks);
+                //await repositoryManager.TrackRepository.AddRangeAsync(newAlbumTracks);
 
                 return newAlbum;
             }
-            catch (Exception err)
+            catch (Exception)
             {
-                throw (err);
+                throw;
+            }
+        }
+
+        private static DateTime ParseReleaseDateToDateTime(string releaseDate, string releaseDatePrecision)
+        {
+            if (releaseDatePrecision == "year")
+            {
+                return DateTime.ParseExact(releaseDate, "yyyy", CultureInfo.InvariantCulture);
+            }
+            else if (releaseDatePrecision == "month")
+            {
+                return DateTime.ParseExact(releaseDate, "yyyy-MM", CultureInfo.InvariantCulture);
+            }
+            else if (releaseDatePrecision == "day")
+            {
+                return DateTime.Parse(releaseDate);
+            }
+            else
+            {
+                throw new Exception();
             }
         }
 
