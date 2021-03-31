@@ -122,7 +122,7 @@ namespace Shufl.API.Models.Group
                     {
                         var newGroupSuggestionIdentifier = await GenerateNewGroupSuggestionIdentifierAsync(
                             group.Id,
-                            repositoryManager.GroupSuggestionRepository);
+                            repositoryManager.GroupSuggestionRepository).ConfigureAwait(false);
 
                         var newGroupSuggestion = new GroupSuggestion
                         {
@@ -184,11 +184,11 @@ namespace Shufl.API.Models.Group
             var groupSuggestionIdentifierExistsForGroup = await CheckGroupSuggestionIdentifierExistsForGroupAsync(
                 newGroupSuggestionIdentifier,
                 groupId,
-                groupSuggestionRepository);
+                groupSuggestionRepository).ConfigureAwait(false);
 
             if (groupSuggestionIdentifierExistsForGroup)
             {
-                return await GenerateNewGroupSuggestionIdentifierAsync(groupId, groupSuggestionRepository);
+                return await GenerateNewGroupSuggestionIdentifierAsync(groupId, groupSuggestionRepository).ConfigureAwait(false);
             }
             else
             {

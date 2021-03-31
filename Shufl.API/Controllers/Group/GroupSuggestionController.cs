@@ -21,7 +21,7 @@ namespace Shufl.API.Controllers.Group
     [Route("[controller]")]
     public class GroupSuggestionController : CustomControllerBase
     {
-        private SpotifyAPICredentials _spotifyAPICredentials;
+        private readonly SpotifyAPICredentials _spotifyAPICredentials;
 
         public GroupSuggestionController(ShuflContext dbContext,
                                          IMapper mapper,

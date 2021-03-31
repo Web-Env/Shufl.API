@@ -30,7 +30,7 @@ namespace Shufl.API.Models.Music
             }
             else
             {
-                return await FetchRandomAlbumAsync(spotifyAPICredentials, genre);
+                return await FetchRandomAlbumAsync(spotifyAPICredentials, genre).ConfigureAwait(false);
             }
         }
 
@@ -123,7 +123,7 @@ namespace Shufl.API.Models.Music
         {
             try
             {
-                var spotifyAlbumDownloadModel = await FetchAlbumForIndexAsync(albumIdentifier, spotifyAPICredentials);
+                var spotifyAlbumDownloadModel = await FetchAlbumForIndexAsync(albumIdentifier, spotifyAPICredentials).ConfigureAwait(false);
 
                 var artists = await ArtistModel.CreateOrFetchArtistAsync(spotifyAlbumDownloadModel.Artists, repositoryManager, mapper);
                 var albumArtists = artists.Select(a => a.Id);
@@ -142,15 +142,15 @@ namespace Shufl.API.Models.Music
                 newAlbum.AlbumImages = mapper.Map<List<AlbumImage>>(spotifyAlbumDownloadModel.Album.Images);
                 await repositoryManager.AlbumRepository.AddAsync(newAlbum);
 
-                //var newAlbumTracks = await TrackModel.IndexNewAlbumTracksAsync(
-                //    newAlbum.Id,
-                //    spotifyAlbumDownloadModel.Album,
-                //    artists,
-                //    repositoryManager,
-                //    mapper,
-                //    spotifyAPICredentials);
+                /*var newAlbumTracks = await TrackModel.IndexNewAlbumTracksAsync(
+                    newAlbum.Id,
+                    spotifyAlbumDownloadModel.Album,
+                    artists,
+                    repositoryManager,
+                    mapper,
+                    spotifyAPICredentials);
 
-                //await repositoryManager.TrackRepository.AddRangeAsync(newAlbumTracks);
+                await repositoryManager.TrackRepository.AddRangeAsync(newAlbumTracks);*/
 
                 return newAlbum;
             }
@@ -176,7 +176,7 @@ namespace Shufl.API.Models.Music
             }
             else
             {
-                throw new Exception();
+                return DateTime.Parse(releaseDate);
             }
         }
 

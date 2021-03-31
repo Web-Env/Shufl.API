@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shufl.API.Models.Group
 {
-    public class GroupSuggestionRatingModel
+    public static class GroupSuggestionRatingModel
     {
         public static async Task<GroupSuggestionRating> CreateNewGroupSuggestionRatingAsync(
             string groupIdentifier,

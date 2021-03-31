@@ -62,7 +62,7 @@ namespace Shufl.API.Models.Music
                     albumArtists,
                     repositoryManager,
                     mapper,
-                    spotifyAPICredentials);
+                    spotifyAPICredentials).ConfigureAwait(false);
             }
 
             return newAlbumTracks;
