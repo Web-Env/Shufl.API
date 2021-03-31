@@ -1,4 +1,4 @@
-﻿using Shufl.API.Models.Helpers;
+﻿using Shufl.API.Models.Music.Helpers;
 using Xunit;
 
 namespace Shufl.API.Models.Tests
