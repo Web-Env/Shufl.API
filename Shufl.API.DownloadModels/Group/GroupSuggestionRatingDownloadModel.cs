@@ -7,15 +7,15 @@ namespace Shufl.API.DownloadModels.Group
     {
         public string Id { get; set; }
 
-        public byte OverallRating { get; set; }
+        public decimal OverallRating { get; set; }
 
-        public byte LyricsRating { get; set; }
+        public decimal LyricsRating { get; set; }
 
-        public byte VocalsRating { get; set; }
+        public decimal VocalsRating { get; set; }
 
-        public byte InstrumentalsRating { get; set; }
+        public decimal InstrumentalsRating { get; set; }
 
-        public byte CompositionRating { get; set; }
+        public decimal CompositionRating { get; set; }
 
         public string Comment { get; set; }
 

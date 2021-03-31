@@ -31,8 +31,8 @@ namespace Shufl.API.Controllers.Group
             _spotifyAPICredentials = spotifyAPICredentials.Value;
         }
 
-        [HttpGet("Get")]
-        public async Task<ActionResult<IEnumerable<GroupSuggestionDownloadModel>>> GetGroupSuggestionsAsync(string groupIdentifier)
+        [HttpGet("GetAll")]
+        public async Task<ActionResult<IEnumerable<GroupSuggestionDownloadModel>>> GetAllGroupSuggestionsAsync(string groupIdentifier)
         {
             try
             {
@@ -49,6 +49,46 @@ namespace Shufl.API.Controllers.Group
                 {
                     return Unauthorized();
                 }
+            }
+            catch (InvalidTokenException err)
+            {
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
+            }
+            catch (UserNotGroupMemberException)
+            {
+                return Forbid();
+            }
+            catch (Exception err)
+            {
+                LogException(err);
+
+                return Problem();
+            }
+        }
+
+        [HttpGet("Get")]
+        public async Task<ActionResult<GroupSuggestionDownloadModel>> GetAllGroupSuggestionsAsync(string groupIdentifier, string groupSuggestionIdentifier)
+        {
+            try
+            {
+                if (await IsUserValidAsync())
+                {
+                    var groupSuggestion = await GroupSuggestionModel.GetGroupSuggestionAsync(
+                        groupIdentifier,
+                        groupSuggestionIdentifier,
+                        ExtractUserIdFromToken(),
+                        RepositoryManager);
+
+                    return Ok(MapEntityToDownloadModel<GroupSuggestion, GroupSuggestionDownloadModel>(groupSuggestion));
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (InvalidTokenException err)
+            {
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
             }
             catch (UserNotGroupMemberException)
             {
@@ -76,12 +116,16 @@ namespace Shufl.API.Controllers.Group
                         GetMapper(),
                         _spotifyAPICredentials);
 
-                    return newGroupSuggestionIdentifier;
+                    return Ok(newGroupSuggestionIdentifier);
                 }
                 else
                 {
                     return Unauthorized();
                 }
+            }
+            catch (InvalidTokenException err)
+            {
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
             }
             catch (UserNotGroupMemberException)
             {

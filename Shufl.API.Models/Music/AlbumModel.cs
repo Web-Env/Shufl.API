@@ -90,7 +90,7 @@ namespace Shufl.API.Models.Music
             try
             {
                 var spotify = SearchHelper.CreateSpotifyClient(spotifyAPICredentials);
-                search = await spotify.Search.Item(new SearchRequest(SearchRequest.Types.Album, $"name:{name}")
+                search = await spotify.Search.Item(new SearchRequest(SearchRequest.Types.Album, name)
                 {
                     Limit = 10,
                     Offset = 0

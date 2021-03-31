@@ -56,6 +56,48 @@ namespace Shufl.API.Models.Group
             }
         }
 
+        public static async Task<GroupSuggestion> GetGroupSuggestionAsync(
+            string groupIdentifier,
+            string groupSuggestionIdentifier,
+            Guid userId,
+            IRepositoryManager repositoryManager)
+        {
+            groupIdentifier = groupIdentifier.ToUpperInvariant();
+            groupSuggestionIdentifier = groupSuggestionIdentifier.ToUpperInvariant();
+
+            try
+            {
+                var group = await repositoryManager.GroupRepository.GetByIdentifierAsync(groupIdentifier);
+
+                if (group != null)
+                {
+                    var isUserMemberOfGroup = await GroupMemberModel.CheckGroupMemberExistsAsync(
+                           groupIdentifier,
+                           userId,
+                           repositoryManager);
+
+                    if (isUserMemberOfGroup)
+                    {
+                        return await repositoryManager.GroupSuggestionRepository.GetByIdentifierAndGroupIdAsync(groupSuggestionIdentifier, group.Id);
+                    }
+                    else
+                    {
+                        throw new UserNotGroupMemberException(
+                            "You are not able to perform this action",
+                            "You are not able to perform this action");
+                    }
+                }
+                else
+                {
+                    throw new InvalidTokenException(InvalidTokenType.TokenNotFound, "The requested Group was not found");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public static async Task<string> CreateNewGroupSuggestionAsync(
             GroupSuggestionUploadModel groupSuggestionUploadModel,
             Guid userId,
@@ -159,7 +201,7 @@ namespace Shufl.API.Models.Group
             Guid userId,
             IGroupSuggestionRepository groupSuggestionRepository)
         {
-            var group = await groupSuggestionRepository.GetByIdentifierAndGroupIdAsync(groupSuggestionIdentifier, userId);
+            var group = await groupSuggestionRepository.CheckExistsByIdentifierAndGroupIdAsync(groupSuggestionIdentifier, userId);
 
             return group != null;
         }
