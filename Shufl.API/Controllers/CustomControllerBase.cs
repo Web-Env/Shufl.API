@@ -43,6 +43,11 @@ namespace Shufl.API.Controllers
             return _mapper.Map<TEntity>(uploadModel);
         }
 
+        protected IMapper GetMapper()
+        {
+            return _mapper;
+        }
+
         protected Guid ExtractUserIdFromToken()
         {
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;

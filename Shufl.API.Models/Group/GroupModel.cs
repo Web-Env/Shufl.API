@@ -16,8 +16,8 @@ namespace Shufl.API.Models.Group
     public static class GroupModel
     {
         public static async Task<List<Domain.Entities.Group>> GetAllUsersGroupsAsync(
-        Guid userId,
-        IRepositoryManager repositoryManager)
+            Guid userId,
+            IRepositoryManager repositoryManager)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace Shufl.API.Models.Group
             Guid userId,
             IRepositoryManager repositoryManager)
         {
-            groupIdentifier = groupIdentifier.ToUpper();
+            groupIdentifier = groupIdentifier.ToUpperInvariant();
 
             try
             {
@@ -83,7 +83,7 @@ namespace Shufl.API.Models.Group
         {
             try
             {
-                var newGroupIdentifier = await GenerateNewGroupIdentifierAsync(repositoryManager.GroupRepository);
+                var newGroupIdentifier = await GenerateNewGroupIdentifierAsync(repositoryManager.GroupRepository).ConfigureAwait(false);
 
                 var newGroup = new Domain.Entities.Group
                 {
@@ -101,7 +101,7 @@ namespace Shufl.API.Models.Group
                 await CreateNewGroupMemberAsync(
                     newGroup.Id,
                     userId,
-                    repositoryManager);
+                    repositoryManager).ConfigureAwait(false);
 
                 return newGroupIdentifier;
             }
@@ -114,10 +114,10 @@ namespace Shufl.API.Models.Group
         private static async Task<string> GenerateNewGroupIdentifierAsync(IGroupRepository groupRepository)
         {
             var newGroupIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.GroupIdentifierLength);
-            var groupExistsWithIdentifier = await CheckGroupExistsByIdentifierAsync(newGroupIdentifier, groupRepository);
+            var groupExistsWithIdentifier = await CheckGroupExistsByIdentifierAsync(newGroupIdentifier, groupRepository).ConfigureAwait(false);
 
             if (groupExistsWithIdentifier) {
-                return await GenerateNewGroupIdentifierAsync(groupRepository);
+                return await GenerateNewGroupIdentifierAsync(groupRepository).ConfigureAwait(false);
             }
             else
             {
@@ -146,7 +146,7 @@ namespace Shufl.API.Models.Group
         {
             var group = await repositoryManager.GroupRepository.GetByIdentifierAsync(groupIdentifier);
 
-            return await CheckUserIsMemberOfGroupAsync(group.Id, userId, repositoryManager.GroupMemberRepository);
+            return await CheckUserIsMemberOfGroupAsync(group.Id, userId, repositoryManager.GroupMemberRepository).ConfigureAwait(false);
         }
 
         private static async Task<bool> CheckUserIsMemberOfGroupAsync(
@@ -166,7 +166,7 @@ namespace Shufl.API.Models.Group
             Guid userId,
             IRepositoryManager repositoryManager)
         {
-            var groupExists = await CheckGroupExistsByIdAsync(groupId, repositoryManager.GroupRepository);
+            var groupExists = await CheckGroupExistsByIdAsync(groupId, repositoryManager.GroupRepository).ConfigureAwait(false);
             var userExists = await UserModel.CheckUserExistsByIdAsync(userId, repositoryManager.UserRepository);
 
             if (groupExists && userExists)

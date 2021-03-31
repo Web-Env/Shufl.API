@@ -13,13 +13,13 @@ namespace Shufl.API.Models.Group
             Guid userId,
             IRepositoryManager repositoryManager)
         {
-            groupIdentifier = groupIdentifier.ToUpper();
+            groupIdentifier = groupIdentifier.ToUpperInvariant();
             var group = await repositoryManager.GroupRepository.GetByIdentifierAsync(groupIdentifier);
 
             return await CheckGroupMemberExistsAsync(
                 group.Id,
                 userId,
-                repositoryManager.GroupMemberRepository);
+                repositoryManager.GroupMemberRepository).ConfigureAwait(false);
         }
 
         public static async Task<bool> CheckGroupMemberExistsAsync(

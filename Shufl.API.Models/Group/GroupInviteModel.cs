@@ -17,7 +17,7 @@ namespace Shufl.API.Models.Group
             Guid userId,
             IRepositoryManager repositoryManager)
         {
-            groupIdentifier = groupIdentifier.ToUpper();
+            groupIdentifier = groupIdentifier.ToUpperInvariant();
 
             try
             {
@@ -41,7 +41,7 @@ namespace Shufl.API.Models.Group
                         {
                             var newGroupInviteIdentifier = await GenerateNewGroupInviteIdentifierAsync(
                                 group.Id,
-                                repositoryManager.GroupInviteRepository);
+                                repositoryManager.GroupInviteRepository).ConfigureAwait(false);
                             var newGroupInviteExpiryDate = DateTime.Now.AddDays(IdentifierConsts.GroupInviteIdentifierExpiryOffsetDays);
 
                             var newGroupInvite = new GroupInvite
@@ -89,13 +89,13 @@ namespace Shufl.API.Models.Group
             var newGroupInviteIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.GroupIdentifierLength);
             var groupInviteExistsForGroupWithIdentifier = await CheckGroupInviteExistsByIdentifierAsync(
                 newGroupInviteIdentifier,
-                groupRepository);
+                groupRepository).ConfigureAwait(false);
 
             if (groupInviteExistsForGroupWithIdentifier)
             {
                 return await GenerateNewGroupInviteIdentifierAsync(
                     groupId,
-                    groupRepository);
+                    groupRepository).ConfigureAwait(false);
             }
             else
             {
@@ -178,13 +178,13 @@ namespace Shufl.API.Models.Group
             Guid userId,
             IRepositoryManager repositoryManager)
         {
-            groupInviteIdentifier = groupInviteIdentifier.ToUpper();
+            groupInviteIdentifier = groupInviteIdentifier.ToUpperInvariant();
 
             try
             {
                 var groupInviteExists = await CheckGroupInviteExistsByIdentifierAsync(
                     groupInviteIdentifier,
-                    repositoryManager.GroupInviteRepository);
+                    repositoryManager.GroupInviteRepository).ConfigureAwait(false);
 
                 if (groupInviteExists)
                 {
