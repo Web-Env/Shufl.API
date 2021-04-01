@@ -12,6 +12,8 @@ namespace Shufl.API.DownloadModels.Music
 
         public IEnumerable<ImageDownloadModel> ArtistImages { get; set; }
 
+        public IEnumerable<ArtistGenreDownloadModel> ArtistGenres { get; set; }
+
         public IEnumerable<AlbumDownloadModel> Albums { get; set; }
     }
 }

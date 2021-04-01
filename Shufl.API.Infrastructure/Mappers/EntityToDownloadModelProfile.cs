@@ -15,7 +15,10 @@ namespace Shufl.API.Infrastructure.Mappers
                    .ForMember(dest => dest.Id, src => src.MapFrom(a => a.SpotifyId))
                    .ForMember(dest => dest.Name, src => src.MapFrom(a => a.Name))
                    .ForMember(dest => dest.Followers, src => src.Ignore())
-                   .ForMember(dest => dest.Albums, src => src.MapFrom(a => a.AlbumArtists.Select(aa => aa.Album)));
+                   .ForMember(dest => dest.Albums, src => src.MapFrom(a => a.AlbumArtists.Select(aa => aa.Album)))
+                   .ForMember(dest => dest.ArtistGenres, src => src.MapFrom(a => a.ArtistGenres.Select(ag => ag.Genre)));
+
+            CreateMap<Genre, ArtistGenreDownloadModel>();
 
             CreateMap<ArtistImage, ImageDownloadModel>();
 
