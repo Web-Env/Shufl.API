@@ -2,6 +2,7 @@
 using Shufl.API.DownloadModels.Album;
 using Shufl.API.Infrastructure.Consts;
 using Shufl.API.Infrastructure.Extensions;
+using Shufl.API.Infrastructure.Helpers;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models.Music.Helpers;
 using Shufl.Domain.Entities;
@@ -95,6 +96,8 @@ namespace Shufl.API.Models.Music
                     Limit = 10,
                     Offset = 0
                 });
+
+                return search;
             }
             catch (Exception err)
             {
@@ -111,8 +114,6 @@ namespace Shufl.API.Models.Music
                     throw;
                 }
             }
-
-            return search;
         }
 
         public static async Task<Album> IndexNewAlbumAsync(
@@ -127,12 +128,15 @@ namespace Shufl.API.Models.Music
 
                 var artists = await ArtistModel.CreateOrFetchArtistAsync(spotifyAlbumDownloadModel.Artists, repositoryManager, mapper);
                 var albumArtists = artists.Select(a => a.Id);
+                var releaseDate = ReleaseDateParsingHelper.ParseReleaseDateToDateTime(
+                    spotifyAlbumDownloadModel.Album.ReleaseDate,
+                    spotifyAlbumDownloadModel.Album.ReleaseDatePrecision);
 
                 var newAlbum = new Album
                 {
                     SpotifyId = spotifyAlbumDownloadModel.Album.Id,
                     Name = spotifyAlbumDownloadModel.Album.Name,
-                    ReleaseDate = ParseReleaseDateToDateTime(spotifyAlbumDownloadModel.Album.ReleaseDate, spotifyAlbumDownloadModel.Album.ReleaseDatePrecision),
+                    ReleaseDate = releaseDate,
                     Type = (byte)MapAlbumTypeToEnum(spotifyAlbumDownloadModel.Album.Type),
                     CreatedOn = DateTime.Now,
                     LastUpdatedOn = DateTime.Now
@@ -157,26 +161,6 @@ namespace Shufl.API.Models.Music
             catch (Exception)
             {
                 throw;
-            }
-        }
-
-        private static DateTime ParseReleaseDateToDateTime(string releaseDate, string releaseDatePrecision)
-        {
-            if (releaseDatePrecision == "year")
-            {
-                return DateTime.ParseExact(releaseDate, "yyyy", CultureInfo.InvariantCulture);
-            }
-            else if (releaseDatePrecision == "month")
-            {
-                return DateTime.ParseExact(releaseDate, "yyyy-MM", CultureInfo.InvariantCulture);
-            }
-            else if (releaseDatePrecision == "day")
-            {
-                return DateTime.Parse(releaseDate);
-            }
-            else
-            {
-                return DateTime.Parse(releaseDate);
             }
         }
 

@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Shufl.API.DownloadModels.Music;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models.Music;
 using Shufl.Domain.Entities;
+using SpotifyAPI.Web;
 using System;
 using System.Threading.Tasks;
 
@@ -70,7 +72,7 @@ namespace Shufl.API.Controllers.Music
                     name,
                     _spotifyAPICredentials).ConfigureAwait(false)).Albums.Items;
 
-                return Ok(albums);
+                return Ok(MapEntitiesToDownloadModels<SimpleAlbum, AlbumDownloadModel>(albums));
             }
             catch (Exception err)
             {
