@@ -56,9 +56,7 @@ namespace Shufl.API.Controllers.User
         {
             try
             {
-                var userId = DecryptionService.DecryptUserId(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
-                if (await UserModel.CheckUserExistsByIdAsync(userId, RepositoryManager.UserRepository))
+                if (await IsUserValidAsync())
                 {
                     return Ok();
                 }
