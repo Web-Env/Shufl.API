@@ -2,6 +2,7 @@
 using Shufl.API.DownloadModels.Music;
 using Shufl.API.Infrastructure.Helpers;
 using Shufl.API.Infrastructure.Mappers.Converters;
+using Shufl.API.Infrastructure.SearchResponseModels;
 using Shufl.Domain.Entities;
 using SpotifyAPI.Web;
 
@@ -29,6 +30,14 @@ namespace Shufl.API.Infrastructure.Mappers
                 .ForMember(dest => dest.AlbumImages, src => src.MapFrom(src => src.Images))
                 .ForMember(dest => dest.Artists, src => src.MapFrom(src => src.Artists))
                 .ForMember(dest => dest.Tracks, src => src.MapFrom(src => src.Tracks.Items));
+
+            CreateMap<AlbumResponseModel, AlbumDownloadModel>()
+                .ForMember(dest => dest.Id, src => src.MapFrom(src => src.Album.Id))
+                .ForMember(dest => dest.Name, src => src.MapFrom(src => src.Album.Name))
+                .ForMember(dest => dest.ReleaseDate, src => src.MapFrom(src => ReleaseDateParsingHelper.ParseReleaseDateToDateTime(src.Album.ReleaseDate, src.Album.ReleaseDatePrecision)))
+                .ForMember(dest => dest.AlbumImages, src => src.MapFrom(src => src.Album.Images))
+                .ForMember(dest => dest.Artists, src => src.MapFrom(src => src.Artists))
+                .ForMember(dest => dest.Tracks, src => src.MapFrom(src => src.Album.Tracks.Items));
 
             CreateMap<SimpleAlbum, AlbumDownloadModel>()
                 .ForMember(dest => dest.Id, src => src.MapFrom(src => src.Id))

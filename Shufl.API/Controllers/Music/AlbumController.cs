@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shufl.API.DownloadModels.Music;
+using Shufl.API.Infrastructure.SearchResponseModels;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models.Music;
 using Shufl.Domain.Entities;
@@ -34,7 +35,7 @@ namespace Shufl.API.Controllers.Music
             {
                 var randomAlbum = await AlbumModel.FetchRandomAlbumAsync(_spotifyAPICredentials, genre).ConfigureAwait(false);
 
-                return Ok(MapEntityToDownloadModel<FullAlbum, AlbumDownloadModel>(randomAlbum));
+                return Ok(MapEntityToDownloadModel<AlbumResponseModel, AlbumDownloadModel>(randomAlbum));
             }
             catch (Exception err)
             {
@@ -57,7 +58,7 @@ namespace Shufl.API.Controllers.Music
             {
                 var album = await AlbumModel.FetchAlbumAsync(albumId, _spotifyAPICredentials).ConfigureAwait(false);
 
-                return Ok(MapEntityToDownloadModel<FullAlbum, AlbumDownloadModel>(album)) ;
+                return Ok(MapEntityToDownloadModel<AlbumResponseModel, AlbumDownloadModel>(album));
             }
             catch (Exception err)
             {
