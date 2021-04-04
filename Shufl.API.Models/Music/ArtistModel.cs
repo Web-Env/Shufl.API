@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Shufl.API.Infrastructure.Consts;
+using Shufl.API.Infrastructure.Helpers;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models.Music.Helpers;
 using Shufl.Domain.Entities;
@@ -72,6 +73,40 @@ namespace Shufl.API.Models.Music
             return artists;
         }
 
+        public static async Task<SearchResponse> PerformArtistSearch(
+            string name,
+            SpotifyAPICredentials spotifyAPICredentials,
+            bool retryDueToException = false)
+        {
+            SearchResponse search;
+            try
+            {
+                var spotify = SearchHelper.CreateSpotifyClient(spotifyAPICredentials);
+                search = await spotify.Search.Item(new SearchRequest(SearchRequest.Types.Artist, name)
+                {
+                    Limit = 10,
+                    Offset = 0
+                });
+
+                return search;
+            }
+            catch (Exception err)
+            {
+                if (!retryDueToException)
+                {
+                    return await PerformArtistSearch(name, spotifyAPICredentials, true).ConfigureAwait(false);
+                }
+                else
+                {
+                    if (err is APIException)
+                    {
+                        Console.Out.WriteLine("Failure due to Spotify API");
+                    }
+                    throw;
+                }
+            }
+        }
+
         public static async Task<IEnumerable<Artist>> CreateOrFetchArtistAsync(
             List<FullArtist> fullArtists,
             IRepositoryManager repositoryManager,
@@ -101,8 +136,6 @@ namespace Shufl.API.Models.Music
 
                 await repositoryManager.ArtistRepository.AddAsync(newArtist);
             }
-
-            //await repositoryManager.ArtistRepository.AddRangeAsync(newArtists);
 
             newArtists.AddRange(existingArtists);
 
@@ -134,7 +167,7 @@ namespace Shufl.API.Models.Music
                 }
                 else
                 {
-                    var newGenre = GenreModel.CreateNewGenre(genre, strippedGenre);
+                    var newGenre = GenreFormattingHelper.CreateNewGenre(genre, strippedGenre);
 
                     artistGenres.Add(new ArtistGenre
                     {

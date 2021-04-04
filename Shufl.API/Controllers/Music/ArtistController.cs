@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Shufl.API.DownloadModels.Artist;
+using Shufl.API.DownloadModels.Music;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models.Music;
 using Shufl.Domain.Entities;
+using SpotifyAPI.Web;
 using System;
 using System.Threading.Tasks;
 
@@ -26,18 +27,15 @@ namespace Shufl.API.Controllers.Music
         }
 
         [HttpGet("RandomArtist")]
-        public async Task<IActionResult> GetRandomArtistAsync()
+        public async Task<ActionResult<ArtistDownloadModel>> GetRandomArtistAsync()
         {
             try
             {
                 var randomArtist = await ArtistModel.FetchRandomArtistAsync(_spotifyAPICredentials);
                 var randomArtistAlbums = await AlbumModel.FetchArtistAlbumsAsync(randomArtist.Id, _spotifyAPICredentials);
 
-                var artist = new ArtistDownloadModel
-                {
-                    Artist = randomArtist,
-                    Albums = randomArtistAlbums
-                };
+                var artist = MapEntityToDownloadModel<FullArtist, ArtistDownloadModel>(randomArtist);
+                artist.Albums = MapEntitiesToDownloadModels<SimpleAlbum, AlbumDownloadModel>(randomArtistAlbums);
 
                 return Ok(artist);
             }
@@ -49,24 +47,40 @@ namespace Shufl.API.Controllers.Music
         }
 
         [HttpGet("Artist")]
-        public async Task<IActionResult> GetArtistAsync(string artistId)
+        public async Task<ActionResult<ArtistDownloadModel>> GetArtistAsync(string artistId)
         {
             try
             {
                 var requestedArtist = await ArtistModel.FetchArtistAsync(artistId, _spotifyAPICredentials);
                 var artistAlbums = await AlbumModel.FetchArtistAlbumsAsync(requestedArtist.Id, _spotifyAPICredentials);
 
-                var artist = new ArtistDownloadModel
-                {
-                    Artist = requestedArtist,
-                    Albums = artistAlbums
-                };
+                var artist = MapEntityToDownloadModel<FullArtist, ArtistDownloadModel>(requestedArtist);
+                artist.Albums = MapEntitiesToDownloadModels<SimpleAlbum, AlbumDownloadModel>(artistAlbums);
+
                 return Ok(artist);
             }
             catch (Exception err)
             {
                 LogException(err);
                 return Problem("There was an error fetching the requested artist from Spotify", statusCode: 500, type: err.GetType().ToString());
+            }
+        }
+
+        [HttpGet("Search")]
+        public async Task<ActionResult<ArtistDownloadModel>> SearchArtistAsync(string name)
+        {
+            try
+            {
+                var artists = (await ArtistModel.PerformArtistSearch(
+                    name,
+                    _spotifyAPICredentials).ConfigureAwait(false)).Artists.Items;
+
+                return Ok(MapEntitiesToDownloadModels<FullArtist, ArtistDownloadModel>(artists));
+            }
+            catch (Exception err)
+            {
+                LogException(err);
+                return Problem("There was an error searching for the album from Spotify", statusCode: 500, type: err.GetType().ToString());
             }
         }
     }

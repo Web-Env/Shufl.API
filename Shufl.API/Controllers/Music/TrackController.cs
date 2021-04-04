@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Shufl.API.DownloadModels.Music;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models.Music;
 using Shufl.Domain.Entities;
+using SpotifyAPI.Web;
 using System;
 using System.Threading.Tasks;
 
@@ -25,12 +27,13 @@ namespace Shufl.API.Controllers.Music
         }
 
         [HttpGet("RandomTrack")]
-        public async Task<IActionResult> GetRandomTrackAsync()
+        public async Task<ActionResult<TrackDownloadModel>> GetRandomTrackAsync()
         {
             try
             {
                 var randomTrack = await TrackModel.FetchRandomTrackAsync(_spotifyAPICredentials);
-                return Ok(randomTrack);
+
+                return Ok(MapEntityToDownloadModel<FullAlbum, AlbumDownloadModel>(randomTrack));
             }
             catch (Exception err)
             {
@@ -40,12 +43,13 @@ namespace Shufl.API.Controllers.Music
         }
 
         [HttpGet("Track")]
-        public async Task<IActionResult> GetTrackAsync(string trackId)
+        public async Task<ActionResult<TrackDownloadModel>> GetTrackAsync(string trackId)
         {
             try
             {
                 var track = await TrackModel.FetchTrackAsync(trackId, _spotifyAPICredentials);
-                return Ok(track);
+
+                return Ok(MapEntityToDownloadModel<FullAlbum, AlbumDownloadModel>(track));
             }
             catch (Exception err)
             {
