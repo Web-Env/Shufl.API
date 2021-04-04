@@ -2,9 +2,9 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Shufl.API.Models.Music
+namespace Shufl.API.Infrastructure.Helpers
 {
-    public static class GenreModel
+    public static class GenreFormattingHelper
     {
         public static Genre CreateNewGenre(string genre, string code)
         {

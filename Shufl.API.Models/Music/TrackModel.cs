@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Shufl.API.DownloadModels.Album;
+using Shufl.API.Infrastructure.SearchResponseModels;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models.Music.Helpers;
 using Shufl.Domain.Entities;
@@ -14,7 +14,7 @@ namespace Shufl.API.Models.Music
 {
     public static class TrackModel
     {
-        public static async Task<AlbumDownloadModel> FetchRandomTrackAsync(SpotifyAPICredentials spotifyAPICredentials, string genre = "")
+        public static async Task<AlbumResponseModel> FetchRandomTrackAsync(SpotifyAPICredentials spotifyAPICredentials, string genre = "")
         {
             var album = await AlbumModel.FetchRandomAlbumAsync(spotifyAPICredentials, genre).ConfigureAwait(false);
             album.Album.Tracks.Items = GetRandomTrack(album.Album.Tracks.Items);
@@ -22,7 +22,7 @@ namespace Shufl.API.Models.Music
             return album;
         }
 
-        public static async Task<AlbumDownloadModel> FetchTrackAsync(string trackId, SpotifyAPICredentials spotifyAPICredentials)
+        public static async Task<AlbumResponseModel> FetchTrackAsync(string trackId, SpotifyAPICredentials spotifyAPICredentials)
         {
             var spotifyClient = SearchHelper.CreateSpotifyClient(spotifyAPICredentials);
 

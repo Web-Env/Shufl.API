@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shufl.API.DownloadModels.Music;
+using Shufl.API.Infrastructure.SearchResponseModels;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models.Music;
 using Shufl.Domain.Entities;
 using SpotifyAPI.Web;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Shufl.API.Controllers.Music
@@ -27,12 +29,13 @@ namespace Shufl.API.Controllers.Music
         }
 
         [HttpGet("RandomAlbum")]
-        public async Task<IActionResult> GetRandomAlbumAsync(string genre = "", bool failed = false)
+        public async Task<ActionResult<AlbumDownloadModel>> GetRandomAlbumAsync(string genre = "", bool failed = false)
         {
             try
             {
                 var randomAlbum = await AlbumModel.FetchRandomAlbumAsync(_spotifyAPICredentials, genre).ConfigureAwait(false);
-                return Ok(randomAlbum);
+
+                return Ok(MapEntityToDownloadModel<AlbumResponseModel, AlbumDownloadModel>(randomAlbum));
             }
             catch (Exception err)
             {
@@ -49,12 +52,13 @@ namespace Shufl.API.Controllers.Music
         }
 
         [HttpGet("Album")]
-        public async Task<IActionResult> GetAlbumAsync(string albumId)
+        public async Task<ActionResult<AlbumDownloadModel>> GetAlbumAsync(string albumId)
         {
             try
             {
                 var album = await AlbumModel.FetchAlbumAsync(albumId, _spotifyAPICredentials).ConfigureAwait(false);
-                return Ok(album);
+
+                return Ok(MapEntityToDownloadModel<AlbumResponseModel, AlbumDownloadModel>(album));
             }
             catch (Exception err)
             {
@@ -64,7 +68,7 @@ namespace Shufl.API.Controllers.Music
         }
 
         [HttpGet("Search")]
-        public async Task<IActionResult> SearchAlbumAsync(string name)
+        public async Task<ActionResult<IEnumerable<AlbumDownloadModel>>> SearchAlbumAsync(string name)
         {
             try
             {

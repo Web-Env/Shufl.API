@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Shufl.API.DownloadModels.Album;
 using Shufl.API.Infrastructure.Consts;
 using Shufl.API.Infrastructure.Extensions;
 using Shufl.API.Infrastructure.Helpers;
+using Shufl.API.Infrastructure.SearchResponseModels;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models.Music.Helpers;
 using Shufl.Domain.Entities;
@@ -11,7 +11,6 @@ using Shufl.Domain.Repositories.Interfaces;
 using SpotifyAPI.Web;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,7 +18,7 @@ namespace Shufl.API.Models.Music
 {
     public static class AlbumModel
     {
-        public static async Task<AlbumDownloadModel> FetchRandomAlbumAsync(SpotifyAPICredentials spotifyAPICredentials, string genre = "")
+        public static async Task<AlbumResponseModel> FetchRandomAlbumAsync(SpotifyAPICredentials spotifyAPICredentials, string genre = "")
         {
             var randomArtist = await ArtistModel.FetchRandomArtistAsync(spotifyAPICredentials, genre);
             var randomArtistAlbums = await FetchArtistAlbumsAsync(randomArtist.Id, spotifyAPICredentials).ConfigureAwait(false);
@@ -35,33 +34,37 @@ namespace Shufl.API.Models.Music
             }
         }
 
+        public static async Task<AlbumResponseModel> FetchAlbumAsync(string albumIdentifier, SpotifyAPICredentials spotifyAPICredentials)
+        {
+            var spotifyClient = SearchHelper.CreateSpotifyClient(spotifyAPICredentials);
+
+            var album = await spotifyClient.Albums.Get(albumIdentifier);
+
+            var artistsRequest = new ArtistsRequest(album.Artists.Select(a => a.Id).ToList());
+            var artists = await spotifyClient.Artists.GetSeveral(artistsRequest);
+
+            var albumResponseModel = new AlbumResponseModel
+            {
+                Album = album,
+                Artists = artists.Artists
+            };
+
+            return albumResponseModel;
+        }
+
         public static async Task<List<SimpleAlbum>> FetchArtistAlbumsAsync(string artistId, SpotifyAPICredentials spotifyAPICredentials)
         {
             var spotifyClient = SearchHelper.CreateSpotifyClient(spotifyAPICredentials);
 
             var albumsRequest = new ArtistsAlbumsRequest
             {
-                Market = "IE"
+                Market = "IE",
+                Limit = 50
             };
+
             var albums = (await spotifyClient.Artists.GetAlbums(artistId, albumsRequest)).Items;
 
             return albums;
-        }
-
-        public static async Task<AlbumDownloadModel> FetchAlbumAsync(string albumIdentifier, SpotifyAPICredentials spotifyAPICredentials)
-        {
-            var spotifyClient = SearchHelper.CreateSpotifyClient(spotifyAPICredentials);
-
-            var album = await spotifyClient.Albums.Get(albumIdentifier);
-            var artist = await ArtistModel.FetchArtistAsync(album.Artists.FirstOrDefault().Id, spotifyAPICredentials);
-
-            var albumData = new AlbumDownloadModel
-            {
-                Genres = artist.Genres,
-                Album = album
-            };
-
-            return albumData;
         }
 
         private static async Task<SpotifyAlbumDownloadModel> FetchAlbumForIndexAsync(
