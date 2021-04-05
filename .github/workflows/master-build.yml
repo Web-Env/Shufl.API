@@ -34,10 +34,10 @@ jobs:
     - name: Configure Keys
       run: |
         ls
-        rm Shufl.API/Shufl.API.Infrastructure/Encryption/Keys/shufl_public_key.xml
-        rm Shufl.API/Shufl.API.Infrastructure/Encryption/Keys/shufl_private_key.xml
-        echo {{ secrets.PUBLIC_KEY }} | tee Shufl.API/Shufl.API.Infrastructure/Encryption/Keys/shufl_public_key.xml
-        echo {{ secrets.PRIVATE_KEY }} | tee Shufl.API/Shufl.API.Infrastructure/Encryption/Keys/shufl_private_key.xml
+        rm Shufl.API.Infrastructure/Encryption/Keys/shufl_public_key.xml
+        rm Shufl.API.Infrastructure/Encryption/Keys/shufl_private_key.xml
+        echo {{ secrets.PUBLIC_KEY }} | tee Shufl.API.Infrastructure/Encryption/Keys/shufl_public_key.xml
+        echo {{ secrets.PRIVATE_KEY }} | tee Shufl.API.Infrastructure/Encryption/Keys/shufl_private_key.xml
     - name: Build (Debug)
       run: dotnet build --no-restore
     - name: Test
