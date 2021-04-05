@@ -9,8 +9,6 @@ using Shufl.API.Models.Group;
 using Shufl.API.UploadModels.Group;
 using Shufl.Domain.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Shufl.API.Controllers.Group
@@ -25,7 +23,7 @@ namespace Shufl.API.Controllers.Group
                                                ILogger<GroupInviteController> logger) : base(dbContext, logger, mapper) { }
 
         [HttpPost("Create")]
-        public async Task<ActionResult<GroupSuggestionRatingDownloadModel>> CreateGroupSuggestionAsync(
+        public async Task<ActionResult<GroupSuggestionRatingDownloadModel>> CreateGroupSuggestionRatingAsync(
             GroupSuggestionRatingUploadModel groupSuggestionRatingUploadModel)
         {
             try
@@ -47,6 +45,78 @@ namespace Shufl.API.Controllers.Group
                 }
             }
             catch (UserNotGroupMemberException)
+            {
+                return Forbid();
+            }
+            catch (InvalidTokenException err)
+            {
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
+            }
+            catch (Exception err)
+            {
+                LogException(err);
+
+                return Problem();
+            }
+        }
+
+        [HttpPost("Edit")]
+        public async Task<ActionResult<GroupSuggestionRatingDownloadModel>> EditGroupSuggestionRatingAsync(
+           GroupSuggestionRatingUploadModel groupSuggestionRatingUploadModel)
+        {
+            try
+            {
+                if (await IsUserValidAsync())
+                {
+                    var groupSuggestionRating = await GroupSuggestionRatingModel.EditGroupSuggestionRatingAsync(
+                        groupSuggestionRatingUploadModel.GroupSuggestionRatingId,
+                        groupSuggestionRatingUploadModel,
+                        ExtractUserIdFromToken(),
+                        RepositoryManager);
+
+                    return Ok(MapEntityToDownloadModel<GroupSuggestionRating, GroupSuggestionRatingDownloadModel>(groupSuggestionRating));
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (UserForbiddenException)
+            {
+                return Forbid();
+            }
+            catch (InvalidTokenException err)
+            {
+                return BadRequest(new InvalidTokenException(err.InvalidTokenType, err.ErrorMessage));
+            }
+            catch (Exception err)
+            {
+                LogException(err);
+
+                return Problem();
+            }
+        }
+
+        [HttpDelete("Delete")]
+        public async Task<ActionResult<GroupSuggestionRatingDownloadModel>> DeleteGroupSuggestionAsync(Guid groupSuggestionRatingId)
+        {
+            try
+            {
+                if (await IsUserValidAsync())
+                {
+                    await GroupSuggestionRatingModel.DeleteGroupSuggestionRatingAsync(
+                        groupSuggestionRatingId,
+                        ExtractUserIdFromToken(),
+                        RepositoryManager);
+
+                    return Ok();
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (UserForbiddenException)
             {
                 return Forbid();
             }
