@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Shufl.API.DownloadModels.Auth;
+using Shufl.API.Infrastructure.Encryption;
 using Shufl.API.Infrastructure.Encryption.Certificates;
 using Shufl.API.Infrastructure.Exceptions;
 using Shufl.API.UploadModels.Auth;
@@ -27,7 +28,7 @@ namespace Shufl.API.Services.Auth
                 {
                     var authenticationResponse = new AuthenticationResponse
                     {
-                        Token = GenerateJwtToken(user.Id.ToString()),
+                        Token = GenerateJwtToken(user.Id.ToString(), user.UserSecret),
                         Username = user.Username,
                         DisplayName = user.DisplayName,
                         FirstName = user.FirstName,
@@ -59,9 +60,11 @@ namespace Shufl.API.Services.Auth
             }
         }
 
-        private string GenerateJwtToken(string userId)
+        private string GenerateJwtToken(string userId, string userSecret)
         {
-            SecurityTokenDescriptor tokenDescriptor = GetTokenDescriptor(userId);
+            var decryptedUserSecret = DecryptionService.DecryptString(userSecret);
+
+            SecurityTokenDescriptor tokenDescriptor = GetTokenDescriptor(userId, decryptedUserSecret);
 
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken = tokenHandler.CreateToken(tokenDescriptor);
@@ -70,7 +73,7 @@ namespace Shufl.API.Services.Auth
             return token;
         }
 
-        private SecurityTokenDescriptor GetTokenDescriptor(string userId)
+        private SecurityTokenDescriptor GetTokenDescriptor(string userId, string userSecret)
         {
             const int expiringDays = 365;
             var signingAudienceCertificate = new SigningAudienceCertificate();
@@ -78,7 +81,8 @@ namespace Shufl.API.Services.Auth
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.NameIdentifier, userId)
+                    new Claim(ClaimTypes.Name, userId),
+                    new Claim(ClaimTypes.NameIdentifier, userSecret)
                 }),
                 Expires = DateTime.UtcNow.AddDays(expiringDays),
                 SigningCredentials = signingAudienceCertificate.GetAudienceSigningKey()

@@ -31,6 +31,12 @@ namespace Shufl.API.Models.User
             return userWithUsername == null;
         }
 
+        public static async Task<Domain.Entities.User> GetUserByIdAsync(Guid userId, IUserRepository userRepository)
+        {
+            var user = await userRepository.GetByIdAsync(userId);
+            return user;
+        }
+
         public static async Task CreateNewUserAsync(
             Domain.Entities.User user,
             string requesterAddress,
@@ -60,6 +66,7 @@ namespace Shufl.API.Models.User
 
             user.DisplayName = $"{user.FirstName} {user.LastName}";
             user.Password = HashingHelper.HashPassword(user.Password);
+            user.UserSecret = EncryptionService.EncryptString(ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.UserIdentifierLength));
             user.CreatedOn = DateTime.Now;
 
             try
@@ -284,6 +291,7 @@ namespace Shufl.API.Models.User
                 var user = await repositoryManager.UserRepository.GetByIdAsync(userId);
 
                 user.Password = HashingHelper.HashPassword(newPassword);
+                user.UserSecret = EncryptionService.EncryptString(ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.UserIdentifierLength));
                 user.LastUpdatedOn = DateTime.Now;
                 user.LastUpdatedBy = userId;
 

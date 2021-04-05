@@ -1,14 +1,19 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Shufl.API.Infrastructure.Consts;
+using Shufl.API.Infrastructure.Encryption;
 using Shufl.API.Infrastructure.Exceptions;
 using Shufl.API.Infrastructure.Settings;
+using Shufl.API.Models;
 using Shufl.API.Models.User;
 using Shufl.API.UploadModels.User;
 using Shufl.Domain.Entities;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebEnv.Util.Mailer.Settings;
 
@@ -21,6 +26,8 @@ namespace Shufl.API.Controllers.User
     {
         private readonly SmtpSettings _smtpSettings;
         private readonly EmailSettings _emailSettings;
+        private readonly ShuflContext _shuflContext;
+
         public UserController(ShuflContext shuflContext,
                               IMapper mapper,
                               IOptions<SmtpSettings> smtpSettings,
@@ -29,6 +36,7 @@ namespace Shufl.API.Controllers.User
         {
             _smtpSettings = smtpSettings.Value;
             _emailSettings = emailSettings.Value;
+            _shuflContext = shuflContext;
         }
 
         [HttpGet("CheckUsernameUnique")]
@@ -236,6 +244,23 @@ namespace Shufl.API.Controllers.User
 
                 return Problem();
             }
+        }
+
+        [HttpPost("UpdateSecrets")]
+        [AllowAnonymous]
+        public async Task<IActionResult> UpdateSecrets()
+        {
+            var users = await _shuflContext.Set<Domain.Entities.User>().ToListAsync();
+
+            foreach (var user in users)
+            {
+                user.UserSecret = EncryptionService.EncryptString(ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.UserIdentifierLength));
+
+                _shuflContext.Users.Update(user);
+                await _shuflContext.SaveChangesAsync();
+            }
+
+            return Ok();
         }
     }
 }

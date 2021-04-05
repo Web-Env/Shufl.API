@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Shufl.API.Infrastructure.Encryption;
 using Shufl.API.Models.User;
 using Shufl.API.UploadModels;
 using Shufl.Domain.Entities;
@@ -50,10 +51,17 @@ namespace Shufl.API.Controllers
 
         protected Guid ExtractUserIdFromToken()
         {
-            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userIdString = User.FindFirst(ClaimTypes.Name)?.Value;
             var userId = Guid.Parse(userIdString);
 
             return userId;
+        }
+
+        protected string ExtractUserSecretFromToken()
+        {
+            var userSecret = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            return userSecret;
         }
 
         protected string ExtractRequesterAddress()
@@ -68,7 +76,33 @@ namespace Shufl.API.Controllers
             var userIsValid = await UserModel.CheckUserExistsByIdAsync(
                 ExtractUserIdFromToken(), RepositoryManager.UserRepository);
 
-            return userIsValid;
+            if (userIsValid)
+            {
+                var user = await UserModel.GetUserByIdAsync(
+                    ExtractUserIdFromToken(), RepositoryManager.UserRepository);
+
+                if (user.UserSecret != null)
+                {
+                    var decryptedUserSecret = DecryptionService.DecryptString(user.UserSecret);
+
+                    if (decryptedUserSecret == ExtractUserSecretFromToken())
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return userIsValid;
+            }
         }
 
         protected void LogException(Exception exception)
