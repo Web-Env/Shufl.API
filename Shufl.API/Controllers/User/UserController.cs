@@ -245,22 +245,5 @@ namespace Shufl.API.Controllers.User
                 return Problem();
             }
         }
-
-        [HttpPost("UpdateSecrets")]
-        [AllowAnonymous]
-        public async Task<IActionResult> UpdateSecrets()
-        {
-            var users = await _shuflContext.Set<Domain.Entities.User>().ToListAsync();
-
-            foreach (var user in users)
-            {
-                user.UserSecret = EncryptionService.EncryptString(ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.UserIdentifierLength));
-
-                _shuflContext.Users.Update(user);
-                await _shuflContext.SaveChangesAsync();
-            }
-
-            return Ok();
-        }
     }
 }
