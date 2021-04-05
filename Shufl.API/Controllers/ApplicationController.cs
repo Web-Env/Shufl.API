@@ -10,7 +10,7 @@ namespace Shufl.API.Controllers
         public ActionResult<string> GetVersion()
         {
             var version = typeof(Startup).Assembly.GetName().Version.ToString();
-            return Ok(version);
+            return version;
         }
     }
 }
