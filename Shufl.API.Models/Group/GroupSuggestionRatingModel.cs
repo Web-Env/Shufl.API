@@ -1,6 +1,7 @@
 ﻿using Shufl.API.DownloadModels.Group;
 using Shufl.API.Infrastructure.Enums;
 using Shufl.API.Infrastructure.Exceptions;
+using Shufl.API.UploadModels.Group;
 using Shufl.Domain.Entities;
 using Shufl.Domain.Repositories.Interfaces;
 using System;
@@ -62,6 +63,84 @@ namespace Shufl.API.Models.Group
                 else
                 {
                     throw new InvalidTokenException(InvalidTokenType.TokenNotFound, "The requested Group was not found");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public static async Task<GroupSuggestionRating> EditGroupSuggestionRatingAsync(
+            Guid groupSuggestionRatingId,
+            GroupSuggestionRatingUploadModel groupSuggestionRatingUploadModel,
+            Guid userId,
+            IRepositoryManager repositoryManager)
+        {
+            try
+            {
+                var groupSuggestionRating = await repositoryManager.GroupSuggestionRatingRepository.GetByIdAsync(groupSuggestionRatingId);
+
+                if (groupSuggestionRating != null)
+                {
+                    if (groupSuggestionRating.CreatedBy == userId)
+                    {
+                        groupSuggestionRating.OverallRating = groupSuggestionRatingUploadModel.OverallRating;
+                        groupSuggestionRating.LyricsRating = groupSuggestionRatingUploadModel.LyricsRating;
+                        groupSuggestionRating.VocalsRating = groupSuggestionRatingUploadModel.VocalsRating;
+                        groupSuggestionRating.InstrumentalsRating = groupSuggestionRatingUploadModel.InstrumentalsRating;
+                        groupSuggestionRating.CompositionRating = groupSuggestionRatingUploadModel.CompositionRating;
+                        groupSuggestionRating.Comment = groupSuggestionRatingUploadModel.Comment;
+                        groupSuggestionRating.LastUpdatedOn = DateTime.Now;
+                        groupSuggestionRating.LastUpdatedBy = userId;
+
+                        await repositoryManager.GroupSuggestionRatingRepository.UpdateAsync(groupSuggestionRating);
+
+                        return groupSuggestionRating;
+                    }
+                    else
+                    {
+                        throw new UserForbiddenException(
+                            "You are not allowed to perform this action",
+                            "You are not allowed to perform this action");
+                    }
+                }
+                else
+                {
+                    throw new InvalidTokenException(InvalidTokenType.TokenNotFound, "The requested Group Suggestion Rating was not found");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public static async Task DeleteGroupSuggestionRatingAsync(
+            Guid groupSuggestionRatingId,
+            Guid userId,
+            IRepositoryManager repositoryManager)
+        {
+            try
+            {
+                var groupSuggestionRating = await repositoryManager.GroupSuggestionRatingRepository.GetByIdAsync(groupSuggestionRatingId);
+
+                if (groupSuggestionRating != null)
+                {
+                    if (groupSuggestionRating.CreatedBy == userId)
+                    {
+                        await repositoryManager.GroupSuggestionRatingRepository.RemoveAsync(groupSuggestionRating);
+                    }
+                    else
+                    {
+                        throw new UserForbiddenException(
+                            "You are not allowed to perform this action",
+                            "You are not allowed to perform this action");
+                    }
+                }
+                else
+                {
+                    throw new InvalidTokenException(InvalidTokenType.TokenNotFound, "The requested Group Suggestion Rating was not found");
                 }
             }
             catch (Exception)
