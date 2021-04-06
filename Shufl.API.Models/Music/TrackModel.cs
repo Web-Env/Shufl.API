@@ -33,6 +33,41 @@ namespace Shufl.API.Models.Music
             return album;
         }
 
+        public static async Task<SearchResponse> PerformTrackSearch(
+            string name,
+            SpotifyAPICredentials spotifyAPICredentials,
+            bool retryDueToException = false)
+        {
+            SearchResponse search;
+            try
+            {
+                var spotify = SearchHelper.CreateSpotifyClient(spotifyAPICredentials);
+                search = await spotify.Search.Item(new SearchRequest(SearchRequest.Types.Track, name)
+                {
+                    Limit = 10,
+                    Offset = 0,
+                    Market = "IE"
+                });
+
+                return search;
+            }
+            catch (Exception err)
+            {
+                if (!retryDueToException)
+                {
+                    return await PerformTrackSearch(name, spotifyAPICredentials, true).ConfigureAwait(false);
+                }
+                else
+                {
+                    if (err is APIException)
+                    {
+                        Console.Out.WriteLine("Failure due to Spotify API");
+                    }
+                    throw;
+                }
+            }
+        }
+
         public static async Task<List<Track>> IndexNewAlbumTracksAsync(
             Guid albumId,
             FullAlbum album,

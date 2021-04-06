@@ -9,6 +9,7 @@ using Shufl.API.Models.Music;
 using Shufl.Domain.Entities;
 using SpotifyAPI.Web;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Shufl.API.Controllers.Music
@@ -56,6 +57,24 @@ namespace Shufl.API.Controllers.Music
             {
                 LogException(err);
                 return Problem("There was an error fetching the requested track from Spotify", statusCode: 500, type: err.GetType().ToString());
+            }
+        }
+
+        [HttpGet("Search")]
+        public async Task<ActionResult<IEnumerable<TrackDownloadModel>>> SearchTrackAsync(string name)
+        {
+            try
+            {
+                var tracks = (await TrackModel.PerformTrackSearch(
+                    name,
+                    _spotifyAPICredentials).ConfigureAwait(false)).Tracks.Items;
+
+                return Ok(MapEntitiesToDownloadModels<FullTrack, TrackDownloadModel>(tracks));
+            }
+            catch (Exception err)
+            {
+                LogException(err);
+                return Problem("There was an error searching for the track from Spotify", statusCode: 500, type: err.GetType().ToString());
             }
         }
     }
