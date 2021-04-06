@@ -97,7 +97,8 @@ namespace Shufl.API.Models.Music
                 search = await spotify.Search.Item(new SearchRequest(SearchRequest.Types.Album, name)
                 {
                     Limit = 10,
-                    Offset = 0
+                    Offset = 0,
+                    Market = "IE"
                 });
 
                 return search;

@@ -8,9 +8,7 @@ using Shufl.Domain.Repositories.Interfaces;
 using SpotifyAPI.Web;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Shufl.API.Models.Music
@@ -85,7 +83,8 @@ namespace Shufl.API.Models.Music
                 search = await spotify.Search.Item(new SearchRequest(SearchRequest.Types.Artist, name)
                 {
                     Limit = 10,
-                    Offset = 0
+                    Offset = 0,
+                    Market = "IE"
                 });
 
                 return search;
