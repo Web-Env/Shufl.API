@@ -16,6 +16,11 @@ jobs:
     # checkout the repo
     - name: 'Checkout Github Action'
       uses: actions/checkout@master
+      
+    - run: 'echo "$PROFILE" > profile.txt'
+      shell: bash
+      env:
+        PROFILE: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_72E761F3538C4F2EAA77DB9DCB32AFF4 }}
 
 
     - name: Set up .NET Core
