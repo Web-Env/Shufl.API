@@ -27,8 +27,8 @@ jobs:
         files: './Shufl.API/appsettings.json'
       env:
         SmtpSettings.EmailSmtpPassword: ${{ secrets.SMTP_PASSWORD }}
-        EmailSettings.PrimaryRedirectDomain: ${{ secrets.PRIMARY_REDIRECT_URL }}
-        ConnectionStrings.ShuflDb: ${{ secrets.PRODUCTION_CONNECTION_STRING }}
+        EmailSettings.PrimaryRedirectDomain: ${{ secrets.PRIMARY_REDIRECT_URL_QA }}
+        ConnectionStrings.ShuflDb: ${{ secrets.QA_CONNECTION_STRING }}
         SpotifyAPICredentials.ClientId: ${{ secrets.SPOTIFY_API_CLIENT_ID }}
         SpotifyAPICredentials.ClientSecret: ${{ secrets.SPOTIFY_API_CLIENT_SECRET }}
     - name: Configure Keys
@@ -57,6 +57,6 @@ jobs:
     - name: Deploy (Release)
       uses: azure/webapps-deploy@v2
       with:
-        app-name: shufl-api
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        app-name: shufl-api-qa
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_QA }}
         package: ./dist
