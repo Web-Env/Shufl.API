@@ -21,7 +21,9 @@ jobs:
       shell: bash
       env:
         PROFILE: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_72E761F3538C4F2EAA77DB9DCB32AFF4 }}
-
+        
+    - run: 'cat profile.txt'
+      shell: bash
 
     - name: Set up .NET Core
       uses: actions/setup-dotnet@v1
