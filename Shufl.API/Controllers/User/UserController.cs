@@ -2,20 +2,15 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shufl.API.DownloadModels.User;
-using Shufl.API.Infrastructure.Consts;
-using Shufl.API.Infrastructure.Encryption;
 using Shufl.API.Infrastructure.Exceptions;
 using Shufl.API.Infrastructure.Settings;
-using Shufl.API.Models;
 using Shufl.API.Models.User;
 using Shufl.API.UploadModels.User;
 using Shufl.Domain.Entities;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using WebEnv.Util.Mailer.Settings;
 
