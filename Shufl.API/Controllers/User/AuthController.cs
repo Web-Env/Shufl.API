@@ -3,14 +3,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Shufl.API.Infrastructure.Encryption;
+using Shufl.API.DownloadModels.Auth;
 using Shufl.API.Infrastructure.Exceptions;
-using Shufl.API.Models.User;
 using Shufl.API.Services.Auth;
 using Shufl.API.UploadModels.Auth;
 using Shufl.Domain.Entities;
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Shufl.API.Controllers.User
@@ -31,7 +29,7 @@ namespace Shufl.API.Controllers.User
 
         [HttpPost("Auth")]
         [AllowAnonymous]
-        public async Task<IActionResult> Authenticate(AuthenticationRequest authenticationRequest)
+        public async Task<ActionResult<AuthenticationResponse>> Authenticate(AuthenticationRequest authenticationRequest)
         {
             try
             {
