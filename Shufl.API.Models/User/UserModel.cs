@@ -398,5 +398,11 @@ namespace Shufl.API.Models.User
                 }
             }
         }
+
+        public static async Task<Domain.Entities.User> GetUserSettingsAsync(Guid userId, IRepositoryManager repositoryManager)
+        {
+            var user = await repositoryManager.UserRepository.GetFullUserByIdAsync(userId);
+            return user;
+        }
     }
 }

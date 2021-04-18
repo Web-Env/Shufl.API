@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Shufl.API.DownloadModels.User;
 using Shufl.API.Infrastructure.Consts;
 using Shufl.API.Infrastructure.Encryption;
 using Shufl.API.Infrastructure.Exceptions;
@@ -20,7 +22,7 @@ using WebEnv.Util.Mailer.Settings;
 namespace Shufl.API.Controllers.User
 {
     [ApiController]
-    [AllowAnonymous]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
     public class UserController : CustomControllerBase
     {
@@ -40,6 +42,7 @@ namespace Shufl.API.Controllers.User
         }
 
         [HttpGet("CheckUsernameUnique")]
+        [AllowAnonymous]
         public async Task<IActionResult> CheckUsernameUnique(string username)
         {
             if (string.IsNullOrWhiteSpace(username) || username.Length < 4)
@@ -62,6 +65,7 @@ namespace Shufl.API.Controllers.User
         }
 
         [HttpPost("Register")]
+        [AllowAnonymous]
         public async Task<IActionResult> CreateUser(UserUploadModel user)
         {
             try
@@ -94,6 +98,7 @@ namespace Shufl.API.Controllers.User
         }
 
         [HttpPost("Verify")]
+        [AllowAnonymous]
         public async Task<IActionResult> VerifyUser(string verificationIdentifier)
         {
             try
@@ -118,6 +123,7 @@ namespace Shufl.API.Controllers.User
         }
 
         [HttpGet("Verify/Validate")]
+        [AllowAnonymous]
         public async Task<IActionResult> ValidateVerificationIdentifier(string verificationIdentifier)
         {
             try
@@ -146,6 +152,7 @@ namespace Shufl.API.Controllers.User
         }
 
         [HttpPost("Verify/New")]
+        [AllowAnonymous]
         public async Task<IActionResult> CreateNewVerification(string email)
         {
             try
@@ -172,6 +179,7 @@ namespace Shufl.API.Controllers.User
         }
 
         [HttpPost("ForgotPassword")]
+        [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(PasswordResetUploadModel passwordResetUploadModel)
         {
             try
@@ -197,6 +205,7 @@ namespace Shufl.API.Controllers.User
         }
 
         [HttpGet("ForgotPassword/Validate")]
+        [AllowAnonymous]
         public async Task<IActionResult> ValidatePasswordResetToken(string passwordResetToken)
         {
             try
@@ -225,6 +234,7 @@ namespace Shufl.API.Controllers.User
         }
 
         [HttpPost("ForgotPassword/New")]
+        [AllowAnonymous]
         public async Task<IActionResult> CreateNewResetPassword(PasswordResetRequestUploadModel passwordResetRequestUploadModel)
         {
             try
@@ -239,6 +249,34 @@ namespace Shufl.API.Controllers.User
                 return Ok();
             }
             catch(Exception err)
+            {
+                LogException(err);
+
+                return Problem();
+            }
+        }
+
+        [HttpGet("UserSettings")]
+        public async Task<ActionResult<UserDownloadModel>> GetUserSettings()
+        {
+            try
+            {
+                if (await IsUserValidAsync())
+                {
+                    var userSettings = await UserModel.GetUserSettingsAsync(
+                        ExtractUserIdFromToken(),
+                        RepositoryManager);
+
+                    var userSettingsModel = MapEntityToDownloadModel<Domain.Entities.User, UserDownloadModel>(userSettings);
+
+                    return Ok(userSettingsModel);
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception err)
             {
                 LogException(err);
 

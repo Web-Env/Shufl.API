@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Shufl.Domain" Version="1.1.0-CI-64" />
+    <PackageReference Include="Shufl.Domain" Version="1.1.0-CI-65" />
   </ItemGroup>
 
   <ItemGroup>

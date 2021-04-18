@@ -13,7 +13,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.4" />
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="5.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Shufl.Domain" Version="1.1.0-CI-64" />
+    <PackageReference Include="Shufl.Domain" Version="1.1.0-CI-65" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.0" />
     <PackageReference Include="WebEnv.Util.Mailer" Version="1.0.1" />
