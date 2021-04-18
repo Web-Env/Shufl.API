@@ -12,8 +12,6 @@
 
         public string LastName { get; set; }
 
-        public string PictureUrl { get; set; }
-
         public string SpotifyUsername { get; set; }
 
         public string SpotifyMarket { get; set; }
