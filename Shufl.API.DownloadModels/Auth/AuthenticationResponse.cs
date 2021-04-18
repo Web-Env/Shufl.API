@@ -16,8 +16,6 @@
 
         public string SpotifyUsername { get; set; }
 
-        public string SpotifyUrl { get; set; }
-
         public string SpotifyMarket { get; set; }
     }
 }

@@ -33,9 +33,7 @@ namespace Shufl.API.Services.Auth
                         DisplayName = user.DisplayName,
                         FirstName = user.FirstName,
                         LastName = user.LastName,
-                        PictureUrl = user.PictureUrl,
                         SpotifyUsername = user.SpotifyUsername,
-                        SpotifyUrl = user.SpotifyUrl,
                         SpotifyMarket = user.SpotifyMarket
                     };
 
