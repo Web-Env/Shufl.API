@@ -63,6 +63,8 @@ namespace Shufl.API.Models.Spotify
                     user.SpotifyUsername = spotifyUserResponse.Id;
                     user.SpotifyMarket = spotifyUserResponse.Country;
                     user.UserImages = userImages;
+                    user.LastUpdatedOn = DateTime.Now;
+                    user.LastUpdatedBy = userId;
 
                     await repositoryManager.UserRepository.UpdateAsync(user);
                 }
@@ -84,6 +86,8 @@ namespace Shufl.API.Models.Spotify
                     user.SpotifyRefreshToken = null;
                     user.SpotifyUsername = null;
                     user.SpotifyMarket = null;
+                    user.LastUpdatedOn = DateTime.Now;
+                    user.LastUpdatedBy = userId;
 
                     await repositoryManager.UserRepository.UpdateAsync(user);
                 }
