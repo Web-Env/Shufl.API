@@ -18,6 +18,8 @@ namespace Shufl.API.Models.Group
     {
         public static async Task<IEnumerable<GroupSuggestion>> GetGroupSuggestionsAsync(
             string groupIdentifier,
+            int page,
+            int pageSize,
             Guid userId,
             IRepositoryManager repositoryManager)
         {
@@ -36,7 +38,7 @@ namespace Shufl.API.Models.Group
 
                     if (isUserMemberOfGroup)
                     {
-                        return await repositoryManager.GroupSuggestionRepository.GetByGroupIdAsync(group.Id);
+                        return await repositoryManager.GroupSuggestionRepository.GetByGroupIdAsync(group.Id, page, pageSize);
                     }
                     else
                     {

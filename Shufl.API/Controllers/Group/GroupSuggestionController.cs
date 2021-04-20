@@ -32,14 +32,16 @@ namespace Shufl.API.Controllers.Group
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<GroupSuggestionDownloadModel>>> GetAllGroupSuggestionsAsync(string groupIdentifier)
+        public async Task<ActionResult<IEnumerable<GroupSuggestionDownloadModel>>> GetAllGroupSuggestionsAsync(string groupIdentifier, int page, int pageSize)
         {
             try
             {
                 if (await IsUserValidAsync())
                 {
                     var groupSuggestions = await GroupSuggestionModel.GetGroupSuggestionsAsync(
-                        groupIdentifier, 
+                        groupIdentifier,
+                        page,
+                        pageSize,
                         ExtractUserIdFromToken(),
                         RepositoryManager);
 
