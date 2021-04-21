@@ -13,6 +13,6 @@ namespace Shufl.API.DownloadModels.Group
 
         public UserDownloadModel CreatedBy { get; set; }
 
-        public List<GroupMemberDownloadModel> Members { get; set; }
+        public List<UserDownloadModel> Members { get; set; }
     }
 }
