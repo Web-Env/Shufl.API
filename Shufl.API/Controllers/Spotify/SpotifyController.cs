@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Shufl.API.Infrastructure.Exceptions;
 using Shufl.API.Infrastructure.Settings;
 using Shufl.API.Models.Spotify;
 using Shufl.API.UploadModels.Spotify;
@@ -92,6 +93,10 @@ namespace Shufl.API.Controllers.Spotify
                     return Unauthorized();
                 }
             }
+            catch (SpotifyNoActiveDevicesException err)
+            {
+                return BadRequest(new SpotifyNoActiveDevicesException(err.ErrorMessage, err.ErrorData));
+            }
             catch (Exception err)
             {
                 LogException(err);
@@ -115,6 +120,10 @@ namespace Shufl.API.Controllers.Spotify
                 {
                     return Unauthorized();
                 }
+            }
+            catch (SpotifyNoActiveDevicesException err)
+            {
+                return BadRequest(new SpotifyNoActiveDevicesException(err.ErrorMessage, err.ErrorData));
             }
             catch (Exception err)
             {
