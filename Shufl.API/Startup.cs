@@ -5,9 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.AzureAppServices;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using Rollbar;
+using Rollbar.NetCore.AspNet;
 using Shufl.API.Infrastructure.Extensions;
 using Shufl.API.Infrastructure.Mappers;
 using Shufl.API.Infrastructure.Settings;
@@ -62,10 +65,29 @@ namespace Shufl.API
             var smtpSettingsSection = Configuration.GetSection("SmtpSettings");
             var emailSettings = Configuration.GetSection("EmailSettings");
             var spotifyAPICredentialsSection = Configuration.GetSection("SpotifyAPICredentials");
+            var rollbarSettingsSection = Configuration.GetSection("Rollbar");
             services.Configure<SmtpSettings>(smtpSettingsSection);
             services.Configure<EmailSettings>(emailSettings);
             services.Configure<SpotifyAPICredentials>(spotifyAPICredentialsSection);
             services.Configure<AzureFileLoggerOptions>(Configuration.GetSection("AzureLogging"));
+
+            var rollbarSettings = new RollbarSettings
+            {
+                AccessToken = rollbarSettingsSection.GetValue<string>("AccessToken"),
+                Environment = rollbarSettingsSection.GetValue<string>("Environment")
+            };
+
+            services.AddHttpContextAccessor();
+
+            ConfigureRollbarSingleton(rollbarSettings);
+
+            services.AddRollbarLogger(loggerOptions =>
+            {
+                loggerOptions.Filter =
+                  (loggerName, loglevel) => loglevel >= LogLevel.Warning;
+            });
+
+
             services.AddCustomMappers();
 
             services.AddSwaggerGen(c =>
@@ -103,6 +125,12 @@ namespace Shufl.API
             });
         }
 
+        private void ConfigureRollbarSingleton(RollbarSettings rollbarSettings)
+        {
+            RollbarLocator.RollbarInstance
+              .Configure(new RollbarConfig(rollbarSettings.AccessToken) { Environment = rollbarSettings.Environment });
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -110,6 +138,8 @@ namespace Shufl.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseRollbarMiddleware();
 
             app.UseCors(_corsPolicy);
 
