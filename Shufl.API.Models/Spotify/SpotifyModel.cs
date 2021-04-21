@@ -90,6 +90,9 @@ namespace Shufl.API.Models.Spotify
                     user.LastUpdatedBy = userId;
 
                     await repositoryManager.UserRepository.UpdateAsync(user);
+
+                    var userImages = await repositoryManager.UserImageRepository.GetByUserIdAsync(user.Id);
+                    await repositoryManager.UserImageRepository.RemoveRangeAsync(userImages);
                 }
             }
             catch (Exception)
