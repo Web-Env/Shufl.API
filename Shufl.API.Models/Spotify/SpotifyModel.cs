@@ -123,13 +123,23 @@ namespace Shufl.API.Models.Spotify
                         var spotifyToken = spotifyAuthResponse.AccessToken;
 
                         var spotifyClient = new SpotifyClient(spotifyToken);
-                        var album = await spotifyClient.Albums.Get(albumId);
 
-                        foreach (var track in album.Tracks.Items)
+                        var activeDevices = await spotifyClient.Player.GetAvailableDevices();
+
+                        if (activeDevices.Devices.Count > 0)
                         {
-                            var trackQueueRequest = new PlayerAddToQueueRequest(track.Uri);
+                            var album = await spotifyClient.Albums.Get(albumId);
 
-                            await spotifyClient.Player.AddToQueue(trackQueueRequest);
+                            foreach (var track in album.Tracks.Items)
+                            {
+                                var trackQueueRequest = new PlayerAddToQueueRequest(track.Uri);
+
+                                await spotifyClient.Player.AddToQueue(trackQueueRequest);
+                            }
+                        }
+                        else
+                        {
+                            throw new SpotifyNoActiveDevicesException("No Active Devices Found", "No Active Devices Found");
                         }
                     }
                     else
@@ -169,9 +179,19 @@ namespace Shufl.API.Models.Spotify
                         var spotifyToken = spotifyAuthResponse.AccessToken;
 
                         var spotifyClient = new SpotifyClient(spotifyToken);
-                        var trackQueueRequest = new PlayerAddToQueueRequest($"spotify:track:{trackId}");
 
-                        await spotifyClient.Player.AddToQueue(trackQueueRequest);
+                        var activeDevices = await spotifyClient.Player.GetAvailableDevices();
+
+                        if (activeDevices.Devices.Count > 0)
+                        {
+                            var trackQueueRequest = new PlayerAddToQueueRequest($"spotify:track:{trackId}");
+
+                            await spotifyClient.Player.AddToQueue(trackQueueRequest);
+                        }
+                        else
+                        {
+                            throw new SpotifyNoActiveDevicesException("No Active Devices Found", "No Active Devices Found");
+                        }
                     }
                     else
                     {
