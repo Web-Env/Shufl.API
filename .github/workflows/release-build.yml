@@ -33,6 +33,7 @@ jobs:
         ConnectionStrings.ShuflDb: ${{ secrets.PRODUCTION_CONNECTION_STRING }}
         SpotifyAPICredentials.ClientId: ${{ secrets.SPOTIFY_API_CLIENT_ID }}
         SpotifyAPICredentials.ClientSecret: ${{ secrets.SPOTIFY_API_CLIENT_SECRET }}
+        Rollbar.AccessToken: ${{ secrets.ROLLBAR_ACCESS_TOKEN }}
     - name: Configure Keys
       run: |
         rm Shufl.API.Infrastructure/Encryption/Keys/shufl_public_key.xml
