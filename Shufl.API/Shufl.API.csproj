@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>10b32a4a-f38a-4aa0-bcf1-660b1accf971</UserSecretsId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="5.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Rollbar.NetCore.AspNet" Version="4.0.3" />
-    <PackageReference Include="Shufl.Domain" Version="1.1.0-CI-74" />
+    <PackageReference Include="Shufl.Domain" Version="1.2.0-CI-75" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.0" />
     <PackageReference Include="WebEnv.Util.Mailer" Version="1.0.1" />
