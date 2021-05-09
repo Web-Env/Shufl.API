@@ -5,6 +5,7 @@ using Shufl.API.UploadModels.Group;
 using Shufl.Domain.Entities;
 using Shufl.Domain.Repositories.Interfaces;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Shufl.API.Models.Group
@@ -40,13 +41,33 @@ namespace Shufl.API.Models.Group
 
                         if (groupSuggestion != null)
                         {
-                            groupSuggestionRating.GroupSuggestionId = groupSuggestion.Id;
-                            groupSuggestionRating.CreatedOn = DateTime.Now;
-                            groupSuggestionRating.CreatedBy = userId;
-                            groupSuggestionRating.LastUpdatedOn = DateTime.Now;
-                            groupSuggestionRating.LastUpdatedBy = userId;
+                            var existingGroupSuggestionRating = (await repositoryManager.GroupSuggestionRatingRepository.FindAsync(gsr =>
+                                gsr.GroupSuggestionId == groupSuggestion.Id &&
+                                gsr.CreatedBy == userId)).FirstOrDefault();
 
-                            return await repositoryManager.GroupSuggestionRatingRepository.AddAsync(groupSuggestionRating);
+                            if (existingGroupSuggestionRating != null)
+                            {
+                                existingGroupSuggestionRating.OverallRating = groupSuggestionRating.OverallRating;
+                                existingGroupSuggestionRating.LyricsRating = groupSuggestionRating.LyricsRating;
+                                existingGroupSuggestionRating.VocalsRating = groupSuggestionRating.VocalsRating;
+                                existingGroupSuggestionRating.InstrumentalsRating = groupSuggestionRating.InstrumentalsRating;
+                                existingGroupSuggestionRating.StructureRating = groupSuggestionRating.StructureRating;
+                                existingGroupSuggestionRating.Comment = groupSuggestionRating.Comment;
+                                groupSuggestionRating.LastUpdatedOn = DateTime.Now;
+                                groupSuggestionRating.LastUpdatedBy = userId;
+
+                                return await repositoryManager.GroupSuggestionRatingRepository.UpdateAsync(existingGroupSuggestionRating);
+                            }
+                            else
+                            {
+                                groupSuggestionRating.GroupSuggestionId = groupSuggestion.Id;
+                                groupSuggestionRating.CreatedOn = DateTime.Now;
+                                groupSuggestionRating.CreatedBy = userId;
+                                groupSuggestionRating.LastUpdatedOn = DateTime.Now;
+                                groupSuggestionRating.LastUpdatedBy = userId;
+
+                                return await repositoryManager.GroupSuggestionRatingRepository.AddAsync(groupSuggestionRating);
+                            }
                         }
                         else
                         {
