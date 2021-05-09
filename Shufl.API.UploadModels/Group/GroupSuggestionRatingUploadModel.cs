@@ -18,7 +18,7 @@ namespace Shufl.API.UploadModels.Group
 
         public decimal? InstrumentalsRating { get; set; }
 
-        public decimal? CompositionRating { get; set; }
+        public decimal? StructureRating { get; set; }
 
         public string Comment { get; set; }
     }

@@ -89,7 +89,7 @@ namespace Shufl.API.Models.Group
                         groupSuggestionRating.LyricsRating = groupSuggestionRatingUploadModel.LyricsRating;
                         groupSuggestionRating.VocalsRating = groupSuggestionRatingUploadModel.VocalsRating;
                         groupSuggestionRating.InstrumentalsRating = groupSuggestionRatingUploadModel.InstrumentalsRating;
-                        groupSuggestionRating.CompositionRating = groupSuggestionRatingUploadModel.CompositionRating;
+                        groupSuggestionRating.StructureRating = groupSuggestionRatingUploadModel.StructureRating;
                         groupSuggestionRating.Comment = groupSuggestionRatingUploadModel.Comment;
                         groupSuggestionRating.LastUpdatedOn = DateTime.Now;
                         groupSuggestionRating.LastUpdatedBy = userId;
