@@ -62,11 +62,19 @@ namespace Shufl.API.Models.Spotify
                     user.SpotifyRefreshToken = EncryptionService.EncryptString(spotifyAuthResponse.RefreshToken);
                     user.SpotifyUsername = spotifyUserResponse.Id;
                     user.SpotifyMarket = spotifyUserResponse.Country;
-                    user.UserImages = userImages;
                     user.LastUpdatedOn = DateTime.Now;
                     user.LastUpdatedBy = userId;
 
                     await repositoryManager.UserRepository.UpdateAsync(user);
+
+                    try
+                    {
+                        await repositoryManager.UserImageRepository.AddRangeAsync(userImages);
+                    }
+                    catch
+                    {
+                        //This is a hack to prevent the link process from failing when images come from Facebook
+                    }
                 }
             }
             catch (Exception)
