@@ -38,6 +38,14 @@ namespace Shufl.API.Infrastructure.Mappers
                 .ForMember(dest => dest.Duration, src => src.MapFrom(t => t.Duration))
                 .ForMember(dest => dest.Artists, src => src.MapFrom(t => t.TrackArtists.Select(ta => ta.Artist)));
 
+            CreateMap<Playlist, PlaylistDownloadModel>()
+                .ForMember(dest => dest.Id, src => src.MapFrom(a => a.SpotifyId))
+                .ForMember(dest => dest.Name, src => src.MapFrom(a => a.Name))
+                .ForMember(dest => dest.PlaylistImages, src => src.MapFrom(a => a.PlaylistImages));
+
+            CreateMap<PlaylistImage, ImageDownloadModel>()
+                .ForMember(dest => dest.Uri, src => src.MapFrom(pi => pi.Url));
+
             CreateMap<User, UserDownloadModel>();
 
             CreateMap<UserImage, ImageDownloadModel>();
@@ -52,6 +60,11 @@ namespace Shufl.API.Infrastructure.Mappers
             CreateMap<GroupSuggestionRating, GroupSuggestionRatingDownloadModel>()
                 .ForMember(dest => dest.CreatedBy, src => src.MapFrom(g => g.CreatedByNavigation));
 
+            CreateMap<GroupPlaylist, GroupPlaylistDownloadModel>()
+                .ForMember(dest => dest.CreatedBy, src => src.MapFrom(g => g.CreatedByNavigation));
+
+            CreateMap<GroupPlaylistRating, GroupPlaylistRatingDownloadModel>()
+                .ForMember(dest => dest.CreatedBy, src => src.MapFrom(g => g.CreatedByNavigation));
 
         }
     }

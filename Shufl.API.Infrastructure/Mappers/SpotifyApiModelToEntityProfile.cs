@@ -60,6 +60,11 @@ namespace Shufl.API.Infrastructure.Mappers
                 .ForMember(dest => dest.Duration, src => src.MapFrom(src => src.DurationMs))
                 .ForMember(dest => dest.Artists, src => src.MapFrom(src => src.Artists));
 
+            CreateMap<SimplePlaylist, PlaylistDownloadModel>()
+                .ForMember(dest => dest.Id, src => src.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, src => src.MapFrom(src => src.Name))
+                .ForMember(dest => dest.PlaylistImages, src => src.MapFrom(src => src.Images));
+
             CreateMap<Image, ImageDownloadModel>()
                 .ForMember(dest => dest.Uri, src => src.ConvertUsing(new ImageUrlConverter(), src => src.Url))
                 .ForMember(dest => dest.Width, src => src.MapFrom(src => src.Width))
@@ -72,6 +77,11 @@ namespace Shufl.API.Infrastructure.Mappers
 
             CreateMap<Image, AlbumImage>()
                 .ForMember(dest => dest.Uri, src => src.ConvertUsing(new ImageUrlConverter(), src => src.Url))
+                .ForMember(dest => dest.Width, src => src.MapFrom(src => src.Width))
+                .ForMember(dest => dest.Height, src => src.MapFrom(src => src.Height));
+
+            CreateMap<Image, PlaylistImage>()
+                .ForMember(dest => dest.Url, src => src.MapFrom(src => src.Url))
                 .ForMember(dest => dest.Width, src => src.MapFrom(src => src.Width))
                 .ForMember(dest => dest.Height, src => src.MapFrom(src => src.Height));
         }
