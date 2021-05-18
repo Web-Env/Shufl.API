@@ -21,7 +21,7 @@ namespace Shufl.API.Models.Music
             IMapper mapper,
             SpotifyAPICredentials spotifyAPICredentials)
         {
-            var spotifyPlaylist = await FetchPlaylistForIndexAsync(playlistIdentifier, spotifyAPICredentials);
+            var spotifyPlaylist = await FetchPlaylistForIndexAsync(playlistIdentifier, spotifyAPICredentials).ConfigureAwait(false);
 
             var newPlaylist = new Playlist
             {

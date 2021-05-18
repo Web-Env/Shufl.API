@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Shufl.API.Models.Group
 {
-    public class GroupPlaylistModel
+    public static class GroupPlaylistModel
     {
         public static async Task<IEnumerable<GroupPlaylist>> GetGroupPlaylistsAsync(
             string groupIdentifier,
