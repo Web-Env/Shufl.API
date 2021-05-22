@@ -72,19 +72,19 @@ namespace Shufl.API.Controllers.Group
         }
 
         [HttpGet("Get")]
-        public async Task<ActionResult<GroupSuggestionDownloadModel>> GetAllGroupSuggestionsAsync(string groupIdentifier, string groupSuggestionIdentifier)
+        public async Task<ActionResult<GroupPlaylistDownloadModel>> GetGroupPlaylistAsync(string groupIdentifier, string groupPlaylistIdentifier)
         {
             try
             {
                 if (await IsUserValidAsync())
                 {
-                    var groupSuggestion = await GroupSuggestionModel.GetGroupSuggestionAsync(
+                    var groupPlaylist = await GroupPlaylistModel.GetGroupPlaylistAsync(
                         groupIdentifier,
-                        groupSuggestionIdentifier,
+                        groupPlaylistIdentifier,
                         ExtractUserIdFromToken(),
                         RepositoryManager);
 
-                    return Ok(MapEntityToDownloadModel<GroupSuggestion, GroupSuggestionDownloadModel>(groupSuggestion));
+                    return Ok(MapEntityToDownloadModel<GroupPlaylist, GroupPlaylistDownloadModel>(groupPlaylist));
                 }
                 else
                 {
