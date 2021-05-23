@@ -48,7 +48,8 @@ namespace Shufl.API.Infrastructure.Mappers
 
             CreateMap<User, UserDownloadModel>();
 
-            CreateMap<UserImage, ImageDownloadModel>();
+            CreateMap<UserImage, ImageDownloadModel>()
+                .ForMember(dest => dest.Uri, src => src.MapFrom(ui => ui.Url));
 
             CreateMap<Group, GroupDownloadModel>()
                 .ForMember(dest => dest.Members, src => src.MapFrom(g => g.GroupMembers.Select(gm => gm.User)))
