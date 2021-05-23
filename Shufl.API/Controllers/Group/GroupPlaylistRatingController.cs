@@ -16,28 +16,28 @@ namespace Shufl.API.Controllers.Group
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
-    public class GroupSuggestionRatingController : CustomControllerBase
+    public class GroupPlaylistRatingController : CustomControllerBase
     {
-        public GroupSuggestionRatingController(ShuflContext dbContext,
-                                               IMapper mapper,
-                                               ILogger<GroupSuggestionRatingController> logger) : base(dbContext, logger, mapper) { }
+        public GroupPlaylistRatingController(ShuflContext dbContext,
+                                             IMapper mapper,
+                                             ILogger<GroupPlaylistRatingController> logger) : base(dbContext, logger, mapper) { }
 
         [HttpPost("Create")]
-        public async Task<ActionResult<GroupSuggestionRatingDownloadModel>> CreateGroupSuggestionRatingAsync(
-            GroupSuggestionRatingUploadModel groupSuggestionRatingUploadModel)
+        public async Task<ActionResult<GroupPlaylistRatingDownloadModel>> CreateGroupPlaylistRatingAsync(
+            GroupPlaylistRatingUploadModel groupPlaylistRatingUploadModel)
         {
             try
             {
                 if (await IsUserValidAsync())
                 {
-                    var groupSuggestionRating = await GroupSuggestionRatingModel.CreateNewGroupSuggestionRatingAsync(
-                        groupSuggestionRatingUploadModel.GroupIdentifier,
-                        groupSuggestionRatingUploadModel.GroupSuggestionIdentifier,
-                        MapUploadModelToEntity<GroupSuggestionRating>(groupSuggestionRatingUploadModel),
+                    var groupPlaylistRating = await GroupPlaylistRatingModel.CreateNewGroupPlaylistRatingAsync(
+                        groupPlaylistRatingUploadModel.GroupIdentifier,
+                        groupPlaylistRatingUploadModel.GroupPlaylistIdentifier,
+                        MapUploadModelToEntity<GroupPlaylistRating>(groupPlaylistRatingUploadModel),
                         ExtractUserIdFromToken(),
                         RepositoryManager);
 
-                    return Ok(MapEntityToDownloadModel<GroupSuggestionRating, GroupSuggestionRatingDownloadModel>(groupSuggestionRating));
+                    return Ok(MapEntityToDownloadModel<GroupPlaylistRating, GroupPlaylistRatingDownloadModel>(groupPlaylistRating));
                 }
                 else
                 {
@@ -61,20 +61,20 @@ namespace Shufl.API.Controllers.Group
         }
 
         [HttpPost("Edit")]
-        public async Task<ActionResult<GroupSuggestionRatingDownloadModel>> EditGroupSuggestionRatingAsync(
-           GroupSuggestionRatingUploadModel groupSuggestionRatingUploadModel)
+        public async Task<ActionResult<GroupPlaylistRatingDownloadModel>> EditGroupPlaylistRatingAsync(
+           GroupPlaylistRatingUploadModel groupPlaylistRatingUploadModel)
         {
             try
             {
                 if (await IsUserValidAsync())
                 {
-                    var groupSuggestionRating = await GroupSuggestionRatingModel.EditGroupSuggestionRatingAsync(
-                        groupSuggestionRatingUploadModel.GroupSuggestionRatingId,
-                        groupSuggestionRatingUploadModel,
+                    var groupPlaylistRating = await GroupPlaylistRatingModel.EditGroupPlaylistRatingAsync(
+                        groupPlaylistRatingUploadModel.GroupPlaylistRatingId,
+                        groupPlaylistRatingUploadModel,
                         ExtractUserIdFromToken(),
                         RepositoryManager);
 
-                    return Ok(MapEntityToDownloadModel<GroupSuggestionRating, GroupSuggestionRatingDownloadModel>(groupSuggestionRating));
+                    return Ok(MapEntityToDownloadModel<GroupPlaylistRating, GroupPlaylistRatingDownloadModel>(groupPlaylistRating));
                 }
                 else
                 {
@@ -98,14 +98,14 @@ namespace Shufl.API.Controllers.Group
         }
 
         [HttpDelete("Delete")]
-        public async Task<ActionResult<GroupSuggestionRatingDownloadModel>> DeleteGroupSuggestionAsync(Guid groupSuggestionRatingId)
+        public async Task<ActionResult<GroupPlaylistRatingDownloadModel>> DeleteGroupPlaylistAsync(Guid groupPlaylistRatingId)
         {
             try
             {
                 if (await IsUserValidAsync())
                 {
-                    await GroupSuggestionRatingModel.DeleteGroupSuggestionRatingAsync(
-                        groupSuggestionRatingId,
+                    await GroupPlaylistRatingModel.DeleteGroupPlaylistRatingAsync(
+                        groupPlaylistRatingId,
                         ExtractUserIdFromToken(),
                         RepositoryManager);
 

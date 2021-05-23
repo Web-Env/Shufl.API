@@ -14,6 +14,8 @@ namespace Shufl.API.Infrastructure.Mappers
                 .ForMember(dest => dest.Username, src => src.ConvertUsing(new LowerCaseConverter()));
 
             CreateMap<GroupSuggestionRatingUploadModel, GroupSuggestionRating>();
+
+            CreateMap<GroupPlaylistRatingUploadModel, GroupPlaylistRating>();
         }
     }
 }
