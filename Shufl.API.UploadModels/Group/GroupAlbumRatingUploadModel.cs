@@ -2,13 +2,13 @@
 
 namespace Shufl.API.UploadModels.Group
 {
-    public class GroupSuggestionRatingUploadModel : IUploadModel
+    public class GroupAlbumRatingUploadModel : IUploadModel
     {
         public string GroupIdentifier { get; set; }
 
-        public string GroupSuggestionIdentifier { get; set; }
+        public string GroupAlbumIdentifier { get; set; }
 
-        public Guid GroupSuggestionRatingId { get; set; }
+        public Guid GroupAlbumRatingId { get; set; }
 
         public decimal OverallRating { get; set; }
 

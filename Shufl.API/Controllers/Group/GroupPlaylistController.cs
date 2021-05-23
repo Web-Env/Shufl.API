@@ -41,14 +41,14 @@ namespace Shufl.API.Controllers.Group
             {
                 if (await IsUserValidAsync())
                 {
-                    var groupSuggestions = await GroupPlaylistModel.GetGroupPlaylistsAsync(
+                    var groupPlaylists = await GroupPlaylistModel.GetGroupPlaylistsAsync(
                         groupIdentifier,
                         page,
                         pageSize,
                         ExtractUserIdFromToken(),
                         RepositoryManager);
 
-                    return Ok(MapEntitiesToDownloadModels<GroupPlaylist, GroupPlaylistDownloadModel>(groupSuggestions));
+                    return Ok(MapEntitiesToDownloadModels<GroupPlaylist, GroupPlaylistDownloadModel>(groupPlaylists));
                 }
                 else
                 {

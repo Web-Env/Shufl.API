@@ -1,6 +1,6 @@
 ﻿namespace Shufl.API.UploadModels.Group
 {
-    public class GroupSuggestionUploadModel
+    public class GroupAlbumUploadModel
     {
         public string GroupIdentifier { get; set; }
 
