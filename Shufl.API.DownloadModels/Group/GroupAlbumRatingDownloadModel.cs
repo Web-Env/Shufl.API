@@ -3,7 +3,7 @@ using System;
 
 namespace Shufl.API.DownloadModels.Group
 {
-    public class GroupSuggestionRatingDownloadModel
+    public class GroupAlbumRatingDownloadModel
     {
         public string Id { get; set; }
 

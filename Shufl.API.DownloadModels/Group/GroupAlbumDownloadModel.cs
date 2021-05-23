@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Shufl.API.DownloadModels.Group
 {
-    public class GroupSuggestionDownloadModel
+    public class GroupAlbumDownloadModel
     {
         public string Identifier { get; set; }
 
@@ -13,7 +13,7 @@ namespace Shufl.API.DownloadModels.Group
 
         public AlbumDownloadModel Album { get; set; }
 
-        public IEnumerable<GroupSuggestionRatingDownloadModel> GroupSuggestionRatings { get; set; }
+        public IEnumerable<GroupAlbumRatingDownloadModel> GroupAlbumRatings { get; set; }
 
         public UserDownloadModel CreatedBy { get; set; }
 

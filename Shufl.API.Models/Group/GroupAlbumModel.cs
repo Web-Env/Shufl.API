@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 
 namespace Shufl.API.Models.Group
 {
-    public static class GroupSuggestionModel
+    public static class GroupAlbumModel
     {
-        public static async Task<IEnumerable<GroupSuggestion>> GetGroupSuggestionsAsync(
+        public static async Task<IEnumerable<GroupAlbum>> GetGroupAlbumsAsync(
             string groupIdentifier,
             int page,
             int pageSize,
@@ -38,7 +38,7 @@ namespace Shufl.API.Models.Group
 
                     if (isUserMemberOfGroup)
                     {
-                        return await repositoryManager.GroupSuggestionRepository.GetByGroupIdAsync(group.Id, page, pageSize);
+                        return await repositoryManager.GroupAlbumRepository.GetByGroupIdAsync(group.Id, page, pageSize);
                     }
                     else
                     {
@@ -58,14 +58,14 @@ namespace Shufl.API.Models.Group
             }
         }
 
-        public static async Task<GroupSuggestion> GetGroupSuggestionAsync(
+        public static async Task<GroupAlbum> GetGroupAlbumAsync(
             string groupIdentifier,
-            string groupSuggestionIdentifier,
+            string groupAlbumIdentifier,
             Guid userId,
             IRepositoryManager repositoryManager)
         {
             groupIdentifier = groupIdentifier.ToUpperInvariant();
-            groupSuggestionIdentifier = groupSuggestionIdentifier.ToUpperInvariant();
+            groupAlbumIdentifier = groupAlbumIdentifier.ToUpperInvariant();
 
             try
             {
@@ -80,7 +80,7 @@ namespace Shufl.API.Models.Group
 
                     if (isUserMemberOfGroup)
                     {
-                        return await repositoryManager.GroupSuggestionRepository.GetByIdentifierAndGroupIdAsync(groupSuggestionIdentifier, group.Id);
+                        return await repositoryManager.GroupAlbumRepository.GetByIdentifierAndGroupIdAsync(groupAlbumIdentifier, group.Id);
                     }
                     else
                     {
@@ -100,14 +100,14 @@ namespace Shufl.API.Models.Group
             }
         }
 
-        public static async Task<string> CreateNewGroupSuggestionAsync(
-            GroupSuggestionUploadModel groupSuggestionUploadModel,
+        public static async Task<string> CreateNewGroupAlbumAsync(
+            GroupAlbumUploadModel groupAlbumUploadModel,
             Guid userId,
             IRepositoryManager repositoryManager,
             IMapper mapper,
             SpotifyAPICredentials spotifyAPICredentials)
         {
-            var groupIdentifier = groupSuggestionUploadModel.GroupIdentifier.ToUpperInvariant();
+            var groupIdentifier = groupAlbumUploadModel.GroupIdentifier.ToUpperInvariant();
 
             try
             {
@@ -116,21 +116,21 @@ namespace Shufl.API.Models.Group
                 if (group != null)
                 {
                     var isUserMemberOfGroup = await GroupMemberModel.CheckGroupMemberExistsAsync(
-                           groupSuggestionUploadModel.GroupIdentifier,
+                           groupAlbumUploadModel.GroupIdentifier,
                            userId,
                            repositoryManager);
 
                     if (isUserMemberOfGroup)
                     {
-                        var newGroupSuggestionIdentifier = await GenerateNewGroupSuggestionIdentifierAsync(
+                        var newGroupAlbumIdentifier = await GenerateNewGroupAlbumIdentifierAsync(
                             group.Id,
-                            repositoryManager.GroupSuggestionRepository).ConfigureAwait(false);
+                            repositoryManager.GroupAlbumRepository).ConfigureAwait(false);
 
-                        var newGroupSuggestion = new GroupSuggestion
+                        var newGroupAlbum = new GroupAlbum
                         {
                             GroupId = group.Id,
-                            Identifier = newGroupSuggestionIdentifier,
-                            IsRandom = groupSuggestionUploadModel.IsRandom,
+                            Identifier = newGroupAlbumIdentifier,
+                            IsRandom = groupAlbumUploadModel.IsRandom,
                             CreatedOn = DateTime.Now,
                             CreatedBy = userId,
                             LastUpdatedOn = DateTime.Now,
@@ -138,27 +138,27 @@ namespace Shufl.API.Models.Group
                         };
 
                         var existingAlbum = await repositoryManager.AlbumRepository.CheckExistsBySpotifyIdAsync(
-                            groupSuggestionUploadModel.AlbumIdentifier);
+                            groupAlbumUploadModel.AlbumIdentifier);
 
                         if (existingAlbum != null)
                         {
-                            newGroupSuggestion.AlbumId = existingAlbum.Id;
+                            newGroupAlbum.AlbumId = existingAlbum.Id;
 
                         }
                         else
                         {
                             var newAlbum = await AlbumModel.IndexNewAlbumAsync(
-                                groupSuggestionUploadModel.AlbumIdentifier,
+                                groupAlbumUploadModel.AlbumIdentifier,
                                 repositoryManager,
                                 mapper,
                                 spotifyAPICredentials);
 
-                            newGroupSuggestion.AlbumId = newAlbum.Id;
+                            newGroupAlbum.AlbumId = newAlbum.Id;
                         }
 
-                        await repositoryManager.GroupSuggestionRepository.AddAsync(newGroupSuggestion);
+                        await repositoryManager.GroupAlbumRepository.AddAsync(newGroupAlbum);
 
-                        return newGroupSuggestionIdentifier;
+                        return newGroupAlbumIdentifier;
                     }
                     else
                     {
@@ -178,32 +178,32 @@ namespace Shufl.API.Models.Group
             }
         }
 
-        private static async Task<string> GenerateNewGroupSuggestionIdentifierAsync(
+        private static async Task<string> GenerateNewGroupAlbumIdentifierAsync(
             Guid groupId,
-            IGroupSuggestionRepository groupSuggestionRepository)
+            IGroupAlbumRepository groupAlbumRepository)
         {
-            var newGroupSuggestionIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.GroupIdentifierLength);
-            var groupSuggestionIdentifierExistsForGroup = await CheckGroupSuggestionIdentifierExistsForGroupAsync(
-                newGroupSuggestionIdentifier,
+            var newGroupAlbumIdentifier = ModelHelpers.GenerateUniqueIdentifier(IdentifierConsts.GroupIdentifierLength);
+            var groupAlbumIdentifierExistsForGroup = await CheckGroupAlbumIdentifierExistsForGroupAsync(
+                newGroupAlbumIdentifier,
                 groupId,
-                groupSuggestionRepository).ConfigureAwait(false);
+                groupAlbumRepository).ConfigureAwait(false);
 
-            if (groupSuggestionIdentifierExistsForGroup)
+            if (groupAlbumIdentifierExistsForGroup)
             {
-                return await GenerateNewGroupSuggestionIdentifierAsync(groupId, groupSuggestionRepository).ConfigureAwait(false);
+                return await GenerateNewGroupAlbumIdentifierAsync(groupId, groupAlbumRepository).ConfigureAwait(false);
             }
             else
             {
-                return newGroupSuggestionIdentifier;
+                return newGroupAlbumIdentifier;
             }
         }
 
-        private static async Task<bool> CheckGroupSuggestionIdentifierExistsForGroupAsync(
-            string groupSuggestionIdentifier,
+        private static async Task<bool> CheckGroupAlbumIdentifierExistsForGroupAsync(
+            string groupAlbumIdentifier,
             Guid userId,
-            IGroupSuggestionRepository groupSuggestionRepository)
+            IGroupAlbumRepository groupAlbumRepository)
         {
-            var group = await groupSuggestionRepository.CheckExistsByIdentifierAndGroupIdAsync(groupSuggestionIdentifier, userId);
+            var group = await groupAlbumRepository.CheckExistsByIdentifierAndGroupIdAsync(groupAlbumIdentifier, userId);
 
             return group != null;
         }

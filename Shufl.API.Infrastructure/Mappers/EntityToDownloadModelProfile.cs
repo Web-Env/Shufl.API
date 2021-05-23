@@ -55,10 +55,10 @@ namespace Shufl.API.Infrastructure.Mappers
                 .ForMember(dest => dest.Members, src => src.MapFrom(g => g.GroupMembers.Select(gm => gm.User)))
                 .ForMember(dest => dest.CreatedBy, src => src.MapFrom(g => g.CreatedByNavigation));
 
-            CreateMap<GroupSuggestion, GroupSuggestionDownloadModel>()
+            CreateMap<GroupAlbum, GroupAlbumDownloadModel>()
                 .ForMember(dest => dest.CreatedBy, src => src.MapFrom(g => g.CreatedByNavigation));
 
-            CreateMap<GroupSuggestionRating, GroupSuggestionRatingDownloadModel>()
+            CreateMap<GroupAlbumRating, GroupAlbumRatingDownloadModel>()
                 .ForMember(dest => dest.CreatedBy, src => src.MapFrom(g => g.CreatedByNavigation));
 
             CreateMap<GroupPlaylist, GroupPlaylistDownloadModel>()
