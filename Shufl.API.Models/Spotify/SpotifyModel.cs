@@ -55,7 +55,7 @@ namespace Shufl.API.Models.Spotify
                             UserId = user.Id,
                             Width = image.Width != null ? (short)image.Width : null,
                             Height = image.Height != null ? (short)image.Height : null,
-                            Uri = image.Uri.Split("/").Last()
+                            Url = image.Uri
                         });
                     }
 
