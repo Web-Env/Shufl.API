@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="5.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Rollbar.NetCore.AspNet" Version="4.0.3" />
-    <PackageReference Include="Shufl.Domain" Version="1.2.1" />
+    <PackageReference Include="Shufl.Domain" Version="1.4.0-CI-84" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.0" />
     <PackageReference Include="WebEnv.Util.Mailer" Version="1.0.1" />
