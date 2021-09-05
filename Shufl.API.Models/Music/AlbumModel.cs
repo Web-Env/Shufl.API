@@ -52,7 +52,8 @@ namespace Shufl.API.Models.Music
                     groupTopThirty.Shuffle();
                     var rand = new Random();
                     var randInt = rand.Next(0, groupTopThirty.Count - 1);
-                    var groupAlbumArtist = groupTopThirty[randInt].Album.AlbumArtists.FirstOrDefault().Artist;
+                    var groupAlbum = groupTopThirty[randInt];
+                    var groupAlbumArtist = groupAlbum.Album.AlbumArtists.FirstOrDefault().Artist;
 
                     var spotifyClient = SearchHelper.CreateSpotifyClient(spotifyAPICredentials);
                     var relatedArtists = await spotifyClient.Artists.GetRelatedArtists(groupAlbumArtist.SpotifyId);
@@ -64,7 +65,10 @@ namespace Shufl.API.Models.Music
                     {
                         randomArtistAlbums.Shuffle();
                         var randomAlbum = GetRandomAlbum(randomArtistAlbums);
-                        return await FetchAlbumAsync(randomAlbum.Id, spotifyAPICredentials).ConfigureAwait(false);
+                        var randomAlbumResponseModel = await FetchAlbumAsync(randomAlbum.Id, spotifyAPICredentials).ConfigureAwait(false);
+                        randomAlbumResponseModel.RelatedGroupAlbum = groupAlbum;
+
+                        return randomAlbumResponseModel;
                     }
                 }
             }

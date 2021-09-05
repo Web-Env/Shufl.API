@@ -37,7 +37,8 @@ namespace Shufl.API.Infrastructure.Mappers
                 .ForMember(dest => dest.ReleaseDate, src => src.MapFrom(src => ReleaseDateParsingHelper.ParseReleaseDateToDateTime(src.Album.ReleaseDate, src.Album.ReleaseDatePrecision)))
                 .ForMember(dest => dest.AlbumImages, src => src.MapFrom(src => src.Album.Images))
                 .ForMember(dest => dest.Artists, src => src.MapFrom(src => src.Artists))
-                .ForMember(dest => dest.Tracks, src => src.MapFrom(src => src.Album.Tracks.Items));
+                .ForMember(dest => dest.Tracks, src => src.MapFrom(src => src.Album.Tracks.Items))
+                .ForMember(dest => dest.RelatedGroupAlbum, src => src.MapFrom(src => src.RelatedGroupAlbum));
 
             CreateMap<SimpleAlbum, AlbumDownloadModel>()
                 .ForMember(dest => dest.Id, src => src.MapFrom(src => src.Id))
