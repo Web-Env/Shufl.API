@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shufl.API.DownloadModels.Group;
+using System;
 using System.Collections.Generic;
 
 namespace Shufl.API.DownloadModels.Music
@@ -16,5 +17,7 @@ namespace Shufl.API.DownloadModels.Music
         public IEnumerable<ArtistDownloadModel> Artists { get; set; }
 
         public IEnumerable<TrackDownloadModel> Tracks { get; set; }
+
+        public GroupAlbumDownloadModel? RelatedGroupAlbum { get; set; }
     }
 }
