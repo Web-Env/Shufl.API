@@ -51,6 +51,33 @@ namespace Shufl.API.Controllers.Music
             }
         }
 
+        [HttpGet("RandomGroupAlbum")]
+        public async Task<ActionResult<AlbumDownloadModel>> GetRandomGroupAlbumAsync(string groupIdentifier, string genre = "", bool failed = false)
+        {
+            try
+            {
+                var randomAlbum = await AlbumModel.FetchRandomGroupAlbumAsync(
+                    groupIdentifier, 
+                    _spotifyAPICredentials, 
+                    RepositoryManager,
+                    genre).ConfigureAwait(false);
+
+                return Ok(MapEntityToDownloadModel<AlbumResponseModel, AlbumDownloadModel>(randomAlbum));
+            }
+            catch (Exception err)
+            {
+                if (!failed)
+                {
+                    return await GetRandomAlbumAsync(genre, true).ConfigureAwait(false);
+                }
+                else
+                {
+                    LogException(err);
+                    return Problem("There was an error fetching a random album from Spotify", statusCode: 500, type: err.GetType().ToString());
+                }
+            }
+        }
+
         [HttpGet("Album")]
         public async Task<ActionResult<AlbumDownloadModel>> GetAlbumAsync(string albumId)
         {

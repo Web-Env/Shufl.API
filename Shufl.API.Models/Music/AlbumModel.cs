@@ -33,6 +33,44 @@ namespace Shufl.API.Models.Music
                 return await FetchRandomAlbumAsync(spotifyAPICredentials, genre).ConfigureAwait(false);
             }
         }
+        public static async Task<AlbumResponseModel> FetchRandomGroupAlbumAsync(
+            string groupIdentifier, 
+            SpotifyAPICredentials spotifyAPICredentials, 
+            IRepositoryManager repositoryManager,
+            string genre = "")
+        {
+            var group = await repositoryManager.GroupRepository.GetByIdentifierAsync(groupIdentifier);
+
+            if (group != null)
+            {
+                var groupAlbumCount = await repositoryManager.GroupAlbumRepository.GetCountByGroupIdAsync(group.Id);
+
+                if (groupAlbumCount >= 30)
+                {
+                    var groupTopThirty = (await repositoryManager.GroupAlbumRepository.GetTopThirtyByGroupIdAsync(group.Id)).ToList();
+
+                    groupTopThirty.Shuffle();
+                    var rand = new Random();
+                    var randInt = rand.Next(0, groupTopThirty.Count - 1);
+                    var groupAlbumArtist = groupTopThirty[randInt].Album.AlbumArtists.FirstOrDefault().Artist;
+
+                    var spotifyClient = SearchHelper.CreateSpotifyClient(spotifyAPICredentials);
+                    var relatedArtists = await spotifyClient.Artists.GetRelatedArtists(groupAlbumArtist.SpotifyId);
+                    randInt = rand.Next(0, relatedArtists.Artists.Count - 1);
+                    var relatedArtist = relatedArtists.Artists[randInt];
+
+                    var randomArtistAlbums = await FetchArtistAlbumsAsync(relatedArtist.Id, spotifyAPICredentials).ConfigureAwait(false);
+                    if (randomArtistAlbums.Count > 0)
+                    {
+                        randomArtistAlbums.Shuffle();
+                        var randomAlbum = GetRandomAlbum(randomArtistAlbums);
+                        return await FetchAlbumAsync(randomAlbum.Id, spotifyAPICredentials).ConfigureAwait(false);
+                    }
+                }
+            }
+
+            return await FetchRandomAlbumAsync(spotifyAPICredentials, genre).ConfigureAwait(false);
+        }
 
         public static async Task<AlbumResponseModel> FetchAlbumAsync(string albumIdentifier, SpotifyAPICredentials spotifyAPICredentials)
         {
@@ -149,16 +187,6 @@ namespace Shufl.API.Models.Music
                 newAlbum.AlbumArtists = MapArtistsToAlbumArtists(albumArtists);
                 newAlbum.AlbumImages = mapper.Map<List<AlbumImage>>(spotifyAlbumDownloadModel.Album.Images);
                 await repositoryManager.AlbumRepository.AddAsync(newAlbum);
-
-                /*var newAlbumTracks = await TrackModel.IndexNewAlbumTracksAsync(
-                    newAlbum.Id,
-                    spotifyAlbumDownloadModel.Album,
-                    artists,
-                    repositoryManager,
-                    mapper,
-                    spotifyAPICredentials);
-
-                await repositoryManager.TrackRepository.AddRangeAsync(newAlbumTracks);*/
 
                 return newAlbum;
             }
