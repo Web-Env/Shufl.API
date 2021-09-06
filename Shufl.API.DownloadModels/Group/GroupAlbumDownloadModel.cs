@@ -7,6 +7,8 @@ namespace Shufl.API.DownloadModels.Group
 {
     public class GroupAlbumDownloadModel
     {
+        public Guid Id { get; set; }
+
         public string Identifier { get; set; }
 
         public bool IsRandom { get; set; }

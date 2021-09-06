@@ -131,6 +131,7 @@ namespace Shufl.API.Models.Group
                             GroupId = group.Id,
                             Identifier = newGroupAlbumIdentifier,
                             IsRandom = groupAlbumUploadModel.IsRandom,
+                            RelatedGroupAlbumId = groupAlbumUploadModel.RelatedGroupAlbumId,
                             CreatedOn = DateTime.Now,
                             CreatedBy = userId,
                             LastUpdatedOn = DateTime.Now,
