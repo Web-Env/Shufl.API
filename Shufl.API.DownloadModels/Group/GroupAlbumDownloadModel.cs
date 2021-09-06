@@ -17,6 +17,8 @@ namespace Shufl.API.DownloadModels.Group
 
         public IEnumerable<GroupAlbumRatingDownloadModel> GroupAlbumRatings { get; set; }
 
+        public GroupAlbumDownloadModel? RelatedGroupAlbum { get; set; }
+
         public UserDownloadModel CreatedBy { get; set; }
 
         public DateTime CreatedOn { get; set; }
