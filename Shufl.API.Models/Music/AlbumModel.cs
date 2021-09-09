@@ -49,7 +49,6 @@ namespace Shufl.API.Models.Music
                 {
                     var groupTopThirty = (await repositoryManager.GroupAlbumRepository.GetTopThirtyByGroupIdAsync(group.Id)).ToList();
 
-                    groupTopThirty.Shuffle();
                     var rand = new Random();
                     var randInt = rand.Next(0, groupTopThirty.Count - 1);
                     var groupAlbum = groupTopThirty[randInt];
